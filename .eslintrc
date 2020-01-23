@@ -1,0 +1,21 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "extends": [
+    "ericgio",
+  ],
+  "parser": "babel-eslint",
+  "rules": {
+    "consistent-return": "off",
+    "no-alert": "off",
+    "no-param-reassign": "off",
+    "no-restricted-globals": "off",
+    "no-shadow": "off",
+    "react/forbid-prop-types": "off",
+    "react/default-props-match-prop-types": "off",
+    "sort-keys": "off",
+  }
+}

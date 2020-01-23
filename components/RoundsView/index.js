@@ -26,20 +26,20 @@ const RoundsView = ({ rounds }) => (
             </tr>
           </thead>
           <tbody>
-          {players.map(({ name, scores, total }) => (
-            <tr key={name}>
-              <td className="player-name">
-                {name}
-              </td>
-              {scores.map(({ hole, score }) => (
-                <td key={`${date}-${name}-${hole}`}>
-                  {score}
+            {players.map(({ name, scores, total }) => (
+              <tr key={name}>
+                <td className="player-name">
+                  {name}
                 </td>
-              ))}
-              <td>{total}</td>
-              <td>+{total - 27}</td>
-            </tr>
-          ))}
+                {scores.map(({ hole, score }) => (
+                  <td key={`${date}-${name}-${hole}`}>
+                    {score}
+                  </td>
+                ))}
+                <td>{total}</td>
+                <td>+{total - 27}</td>
+              </tr>
+            ))}
           </tbody>
         </Table>
       </div>

@@ -43,7 +43,7 @@ fs
   .forEach((filepath, idx) => {
     const contents = fs.readFileSync(path.join(CSV_PATH, filepath));
 
-    const [filename, ext] = filepath.split('.');
+    const [filename] = filepath.split('.');
     const m = moment(filename, 'YY_MM_DD');
     const round = {
       date: m.format(),
