@@ -3,8 +3,10 @@ import React, { Fragment } from 'react';
 import { Container, Jumbotron, Tab, Tabs } from 'react-bootstrap';
 
 import RoundsView from '../components/RoundsView';
+import StatsView from '../components/StatsView';
 
-import DATA from '../data/data.json';
+import ROUNDS from '../data/rounds.json';
+import STATS from '../data/stats.json';
 
 import './styles/Index.scss';
 
@@ -12,7 +14,7 @@ const Emoji = () => (
   <span aria-label="weekday-golf" role="img">🏌🏾‍♂</span>
 );
 
-const IndexPage = ({ rounds }) => {
+const IndexPage = ({ rounds, stats }) => {
   const title = 'Weekday Golf';
 
   return (
@@ -39,7 +41,7 @@ const IndexPage = ({ rounds }) => {
               <RoundsView rounds={rounds} />
             </Tab>
             <Tab eventKey="stats" title="Stats">
-              nothing
+              <StatsView {...stats} />
             </Tab>
           </Tabs>
         </Container>
@@ -50,7 +52,8 @@ const IndexPage = ({ rounds }) => {
 
 IndexPage.getInitialProps = () => {
   return {
-    rounds: DATA,
+    rounds: ROUNDS,
+    stats: STATS,
   };
 };
 

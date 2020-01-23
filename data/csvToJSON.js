@@ -4,6 +4,7 @@ const moment = require('moment');
 const path = require('path');
 
 const CSV_PATH = path.join(__dirname, 'csv');
+const PAR = 27;
 
 function normalizeName(name) {
   name = name.toLowerCase();
@@ -35,6 +36,24 @@ function normalizeName(name) {
   throw Error(`Who let ${name} play?`);
 }
 
+function idx(obj, key, defaultValue) {
+  return (obj && obj[key]) || defaultValue;
+}
+
+function round(value, precision = 0) {
+  /* eslint-disable-next-line no-restricted-properties */
+  const multiplier = Math.pow(10, precision);
+  return Math.round(value * multiplier) / multiplier;
+}
+
+function getAvgScore(cumScore, totalRounds) {
+  return round(cumScore / totalRounds, 1);
+}
+
+function getRoundsPlayedPercentage(roundsPlayed, totalRounds) {
+  return `${round((roundsPlayed * 100) / totalRounds, 1)}%`;
+}
+
 const rounds = [];
 
 // Read and parse .csv files.
@@ -47,11 +66,14 @@ fs
     const m = moment(filename, 'YY_MM_DD');
     const round = {
       date: m.format(),
+      // TODO: Account for other locations.
       location: 'Mariner\'s Point',
       players: [],
     };
 
     const sheet = parse(contents);
+
+    // Skip the table headers.
     sheet.forEach((row, idx) => {
       if (idx < 2) {
         return;
@@ -73,9 +95,102 @@ fs
     });
 
     rounds.push(round);
-
-    fs.writeFileSync(
-      path.join(__dirname, 'data.json'),
-      JSON.stringify(rounds, null, 2)
-    );
   });
+
+// Write rounds and stats data to file.
+fs.writeFileSync(
+  path.join(__dirname, 'rounds.json'),
+  JSON.stringify(rounds, null, 2)
+);
+
+const totalRounds = rounds.length;
+
+// Calculate stats from rounds data.
+const statsByPlayer = Object.values(rounds.reduce((acc, { players }) => {
+  players.forEach(({ name, scores, total }) => {
+    const player = acc[name];
+
+    const cumScore = idx(player, 'cumScore', 0) + total;
+    const roundsPlayed = idx(player, 'roundsPlayed', 0) + 1;
+    const avgScore = getAvgScore(cumScore, roundsPlayed);
+
+    const scoreDist = idx(player, 'scoreDist', {});
+    const scoresByHole = idx(player, 'scoresByHole', {});
+
+    scores.forEach(({ hole, score }) => {
+      scoreDist[score] = idx(scoreDist, score, 0) + 1;
+
+      const cumHoleScore = idx(scoresByHole[hole], 'cumHoleScore', 0) + score;
+      scoresByHole[hole] = {
+        hole,
+        cumHoleScore,
+        avgHoleScore: round(cumHoleScore / roundsPlayed, 1),
+      };
+    });
+
+    acc[name] = {
+      name,
+      cumScore,
+      avgScore,
+      avgScoreToPar: round(avgScore - PAR, 1),
+      roundsPlayed,
+      roundsPlayedPercent: getRoundsPlayedPercentage(
+        roundsPlayed,
+        totalRounds
+      ),
+      scoreDist,
+      scoresByHole,
+    };
+  });
+
+  return acc;
+}, {}));
+
+const globalScoresByHole = statsByPlayer.reduce((acc, player) => {
+  Object.values(player.scoresByHole).forEach(({
+    avgHoleScore,
+    cumHoleScore,
+    hole,
+  }) => {
+    const bestScore = idx(acc[hole], 'bestScore', 100);
+    const cumScore = idx(acc[hole], 'cumHoleScore', 0) + cumHoleScore;
+    const cumRounds = idx(acc[hole], 'cumRounds', 0) + player.roundsPlayed;
+
+    acc[hole] = {
+      hole,
+      bestScore: avgHoleScore < bestScore ? avgHoleScore : bestScore,
+      avgHoleScore: round(cumScore / cumRounds, 1),
+      cumHoleScore: cumScore,
+      cumRounds,
+    };
+  });
+
+  return acc;
+}, {});
+
+const roundsByScore = rounds
+  .reduce((acc, { date, location, players }) => {
+    players.forEach(({ name, total }) => {
+      acc.push({
+        date,
+        location,
+        name,
+        total,
+        toPar: round(total - PAR),
+      });
+    });
+
+    return acc;
+  }, [])
+  .sort((r1, r2) => (r1.total > r2.total ? 1 : -1));
+
+const stats = {
+  globalScoresByHole,
+  roundsByScore,
+  statsByPlayer,
+};
+
+fs.writeFileSync(
+  path.join(__dirname, 'stats.json'),
+  JSON.stringify(stats, null, 2)
+);
