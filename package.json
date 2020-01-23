@@ -5,6 +5,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "check": "npm run lint",
     "lint": "eslint . --report-unused-disable-directives",
     "lint:fix": "eslint . --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +27,17 @@
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.8.0",
-    "eslint-config-ericgio": "^5.0.1"
+    "eslint-config-ericgio": "^5.0.1",
+    "husky": "^4.2.0",
+    "lint-staged": "^10.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn run check"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix"
   }
 }
