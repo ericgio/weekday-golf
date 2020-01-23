@@ -1,0 +1,24 @@
+{
+  "name": "weekday-golf",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "authors": [
+    "ericgio"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
+    "csv-parse": "^4.8.5",
+    "moment": "^2.24.0",
+    "next": "^9.2.0",
+    "node-sass": "^4.13.1",
+    "react": "^16.12.0",
+    "react-bootstrap": "^1.0.0-beta.16",
+    "react-dom": "^16.12.0"
+  }
+}
