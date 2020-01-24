@@ -4,11 +4,20 @@ import { Table } from 'react-bootstrap';
 
 import './RoundsView.scss';
 
-const holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const HOLES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const PAR = 27;
+
+function sortBy(key) {
+  return (r1, r2) => {
+    if (r1[key] < r2[key]) return 1;
+    if (r1[key] > r2[key]) return -1;
+    return 0;
+  };
+}
 
 const RoundsView = ({ rounds }) => (
   <Fragment>
-    {rounds.reverse().map(({ date, players }) => (
+    {rounds.sort(sortBy('date')).map(({ date, players }) => (
       <div key={date}>
         <h3>{moment(date).format('ddd MMMM Do, YYYY')}</h3>
         <Table className="round-table" size="sm">
@@ -17,7 +26,7 @@ const RoundsView = ({ rounds }) => (
               <th className="player-name">
                 Name
               </th>
-              {holes.map((hole) => (
+              {HOLES.map((hole) => (
                 <th key={`hole-${hole}`}>{hole}</th>
               ))}
               <th colSpan="2">
@@ -37,7 +46,7 @@ const RoundsView = ({ rounds }) => (
                   </td>
                 ))}
                 <td>{total}</td>
-                <td>+{total - 27}</td>
+                <td>+{total - PAR}</td>
               </tr>
             ))}
           </tbody>
