@@ -8,7 +8,7 @@ const holes = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const RoundsView = ({ rounds }) => (
   <Fragment>
-    {rounds.map(({ date, players }) => (
+    {rounds.reverse().map(({ date, players }) => (
       <div key={date}>
         <h3>{moment(date).format('ddd MMMM Do, YYYY')}</h3>
         <Table className="round-table" size="sm">

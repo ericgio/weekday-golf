@@ -5,6 +5,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start -p $PORT",
+    "data": "node data/csvToJSON.js",
     "check": "npm run lint",
     "lint": "eslint . --report-unused-disable-directives",
     "lint:fix": "eslint . --fix",
