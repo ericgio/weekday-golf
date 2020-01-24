@@ -1,14 +1,18 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { stringify } from 'qs';
 import React, { Fragment } from 'react';
 import { Container, Jumbotron, Tab, Tabs } from 'react-bootstrap';
 
-import RoundsView from '../components/RoundsView';
-import StatsView from '../components/StatsView';
+import RoundsView from '../views/rounds';
+import StatsView from '../views/stats';
 
 import ROUNDS from '../data/rounds.json';
 import STATS from '../data/stats.json';
 
 import './styles/Index.scss';
+
+const DEFAULT_TAB = 'rounds';
 
 const Emoji = () => (
   <span aria-label="weekday-golf" role="img">🏌🏾‍♂</span>
@@ -16,6 +20,9 @@ const Emoji = () => (
 
 const IndexPage = ({ rounds, stats }) => {
   const title = 'Weekday Golf';
+  const { pathname, query, ...router } = useRouter();
+  const activeTab = query.t || DEFAULT_TAB;
+  const [asPath] = router.asPath.split('?');
 
   return (
     <Fragment>
@@ -33,9 +40,17 @@ const IndexPage = ({ rounds, stats }) => {
         </Jumbotron>
         <Container>
           <Tabs
+            activeKey={activeTab}
             className="content-tabs"
-            defaultActiveKey="rounds"
             id="tabs"
+            onSelect={(t) => {
+              const query = { t };
+              router.push(
+                { pathname, query },
+                `${asPath}?${stringify(query)}`
+              );
+            }}
+            transition={false}
             variant="tabs">
             <Tab eventKey="rounds" title="Rounds">
               <RoundsView rounds={rounds} />
@@ -50,7 +65,7 @@ const IndexPage = ({ rounds, stats }) => {
   );
 };
 
-IndexPage.getInitialProps = () => {
+IndexPage.getInitialProps = ({ query }) => {
   return {
     rounds: ROUNDS,
     stats: STATS,
