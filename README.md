@@ -3,11 +3,11 @@
 ### To Do:
 
 #### Stats
-- [ ] highlight lowest score per hole?
-- [ ] rounds played by player
-- [ ] 10 lowest rounds
-- [ ] average round by player
-- [ ] best/worst hole (overall, by player)
+- [X] highlight lowest score per hole
+- [X] rounds played by player
+- [X] Top rounds
+- [X] average round by player
+- [X] best/worst hole (overall, by player)
 - [ ] most pars
 - [ ] skins won
 
