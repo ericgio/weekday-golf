@@ -3,82 +3,29 @@ const fs = require('fs');
 const moment = require('moment');
 const path = require('path');
 
+const {
+  getAvg,
+  getRoundsPlayedPercentage,
+  idx,
+  normalizeName,
+  roundTo,
+} = require('./utils');
+
 const CSV_PATH = path.join(__dirname, 'csv');
 const PAR = 27;
 
-function normalizeName(name) {
-  name = name.toLowerCase();
-
-  if (name.indexOf('eric g') > -1) {
-    return 'Eric Giovanola';
-  }
-
-  if (name.indexOf('eric z') > -1) {
-    return 'Eric Zamore';
-  }
-
-  if (name.indexOf('paul') > -1) {
-    return 'Paul McDonald';
-  }
-
-  if (name.indexOf('raylene') > -1) {
-    return 'Raylene Yung';
-  }
-
-  if (name.indexOf('makinde') > -1) {
-    return 'Makinde Adeagbo';
-  }
-
-  if (name.indexOf('ola') > -1) {
-    return 'Ola Okelola';
-  }
-
-  throw Error(`Who let ${name} play?`);
-}
-
-function idx(obj, key, defaultValue) {
-  return (obj && obj[key]) || defaultValue;
-}
-
-function round(value, precision = 0) {
-  /* eslint-disable-next-line no-restricted-properties */
-  const multiplier = Math.pow(10, precision);
-  return Math.round(value * multiplier) / multiplier;
-}
-
-function getAvgScore(cumScore, totalRounds) {
-  return round(cumScore / totalRounds, 1);
-}
-
-function getRoundsPlayedPercentage(roundsPlayed, totalRounds) {
-  return `${round((roundsPlayed * 100) / totalRounds, 1)}%`;
-}
-
-const rounds = [];
-
 // Read and parse .csv files.
-fs
+const rounds = fs
   .readdirSync(CSV_PATH)
-  .forEach((filepath, idx) => {
+  .map((filepath, idx) => {
+    const [filename] = filepath.split('.');
     const contents = fs.readFileSync(path.join(CSV_PATH, filepath));
 
-    const [filename] = filepath.split('.');
-    const m = moment(filename, 'YY_MM_DD');
-    const round = {
-      date: m.format(),
-      // TODO: Account for other locations.
-      location: 'Mariner\'s Point',
-      players: [],
-    };
+    // Note: Skip the first two rows.
+    /* eslint-disable-next-line no-unused-vars */
+    const [_, __, ...rows] = parse(contents);
 
-    const sheet = parse(contents);
-
-    // Skip the table headers.
-    sheet.forEach((row, idx) => {
-      if (idx < 2) {
-        return;
-      }
-
+    const players = rows.map((row, idx) => {
       const name = row.shift();
       const scores = row
         .slice(0, 9)
@@ -87,23 +34,20 @@ fs
           score: parseInt(score, 10),
         }));
 
-      round.players.push({
+      return {
         name: normalizeName(name),
         scores,
         total: scores.reduce((acc, { score }) => acc + score, 0),
-      });
+      };
     });
 
-    rounds.push(round);
+    return {
+      date: moment(filename, 'YY_MM_DD').format(),
+      // TODO: Account for other locations.
+      location: 'Mariner\'s Point',
+      players,
+    };
   });
-
-// Write rounds and stats data to file.
-fs.writeFileSync(
-  path.join(__dirname, 'rounds.json'),
-  JSON.stringify(rounds, null, 2)
-);
-
-const totalRounds = rounds.length;
 
 // Calculate stats from rounds data.
 const statsByPlayer = Object.values(rounds.reduce((acc, { players }) => {
@@ -112,7 +56,7 @@ const statsByPlayer = Object.values(rounds.reduce((acc, { players }) => {
 
     const cumScore = idx(player, 'cumScore', 0) + total;
     const roundsPlayed = idx(player, 'roundsPlayed', 0) + 1;
-    const avgScore = getAvgScore(cumScore, roundsPlayed);
+    const avgScore = getAvg(cumScore, roundsPlayed);
 
     const scoreDist = idx(player, 'scoreDist', {});
     const scoresByHole = idx(player, 'scoresByHole', {});
@@ -124,7 +68,7 @@ const statsByPlayer = Object.values(rounds.reduce((acc, { players }) => {
       scoresByHole[hole] = {
         hole,
         cumHoleScore,
-        avgHoleScore: round(cumHoleScore / roundsPlayed, 1),
+        avgHoleScore: getAvg(cumHoleScore, roundsPlayed),
       };
     });
 
@@ -132,11 +76,11 @@ const statsByPlayer = Object.values(rounds.reduce((acc, { players }) => {
       name,
       cumScore,
       avgScore,
-      avgScoreToPar: round(avgScore - PAR, 1),
+      avgScoreToPar: roundTo(avgScore - PAR, 1),
       roundsPlayed,
       roundsPlayedPercent: getRoundsPlayedPercentage(
-        roundsPlayed,
-        totalRounds
+        roundsPlayed, // Rounds played by player
+        rounds.length // Total rounds played
       ),
       scoreDist,
       scoresByHole,
@@ -159,7 +103,7 @@ const globalScoresByHole = statsByPlayer.reduce((acc, player) => {
     acc[hole] = {
       hole,
       bestScore: avgHoleScore < bestScore ? avgHoleScore : bestScore,
-      avgHoleScore: round(cumScore / cumRounds, 1),
+      avgHoleScore: getAvg(cumScore, cumRounds),
       cumHoleScore: cumScore,
       cumRounds,
     };
@@ -176,7 +120,7 @@ const roundsByScore = rounds
         location,
         name,
         total,
-        toPar: round(total - PAR),
+        toPar: roundTo(total - PAR),
       });
     });
 
@@ -190,7 +134,13 @@ const stats = {
   statsByPlayer,
 };
 
-fs.writeFileSync(
-  path.join(__dirname, 'stats.json'),
-  JSON.stringify(stats, null, 2)
-);
+// Write rounds and stats data to file.
+[
+  { data: rounds, name: 'rounds' },
+  { data: stats, name: 'stats' },
+].forEach(({ data, name }) => {
+  fs.writeFileSync(
+    path.join(__dirname, `${name}.json`),
+    JSON.stringify(data, null, 2)
+  );
+});
