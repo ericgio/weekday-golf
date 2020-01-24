@@ -8,7 +8,7 @@
 - [X] Top rounds
 - [X] average round by player
 - [X] best/worst hole (overall, by player)
-- [ ] most pars
+- [ ] score distribution by player
 - [ ] skins won
 
 #### App
