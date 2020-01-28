@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "next",
-    "build": "next build",
+    "build": "npm run data && next build",
     "start": "next start -p $PORT",
-    "data": "node data/csvToJSON.js",
+    "data": "node data/generateData.js",
     "check": "npm run lint",
     "lint": "eslint . --report-unused-disable-directives",
     "lint:fix": "eslint . --fix",
@@ -18,7 +18,8 @@
   "dependencies": {
     "@zeit/next-sass": "^1.0.1",
     "classnames": "^2.2.6",
-    "csv-parse": "^4.8.5",
+    "dotenv": "^8.2.0",
+    "googleapis": "^47.0.0",
     "moment": "^2.24.0",
     "next": "^9.2.0",
     "node-sass": "^4.13.1",

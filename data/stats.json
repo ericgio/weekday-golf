@@ -264,14 +264,14 @@
     {
       "date": "2019-06-26T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Makinde Adeagbo",
+      "name": "Eric Zamore",
       "total": 50,
       "toPar": 23
     },
     {
       "date": "2019-06-26T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Eric Zamore",
+      "name": "Makinde Adeagbo",
       "total": 50,
       "toPar": 23
     },
@@ -299,14 +299,14 @@
     {
       "date": "2019-09-10T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Eric Giovanola",
+      "name": "Eric Zamore",
       "total": 52,
       "toPar": 25
     },
     {
       "date": "2019-09-10T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Eric Zamore",
+      "name": "Eric Giovanola",
       "total": 52,
       "toPar": 25
     },
@@ -369,14 +369,14 @@
     {
       "date": "2019-10-09T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Raylene Yung",
+      "name": "Ola Okelola",
       "total": 60,
       "toPar": 33
     },
     {
       "date": "2019-10-09T00:00:00-07:00",
       "location": "Mariner's Point",
-      "name": "Ola Okelola",
+      "name": "Raylene Yung",
       "total": 60,
       "toPar": 33
     },
@@ -396,6 +396,68 @@
     }
   ],
   "statsByPlayer": [
+    {
+      "name": "Eric Zamore",
+      "cumScore": 580,
+      "avgScore": 48.3,
+      "avgScoreToPar": 21.3,
+      "roundsPlayed": 12,
+      "roundsPlayedPercent": "100%",
+      "scoreDist": {
+        "3": 4,
+        "4": 23,
+        "5": 31,
+        "6": 29,
+        "7": 21
+      },
+      "scoresByHole": {
+        "1": {
+          "hole": 1,
+          "cumHoleScore": 58,
+          "avgHoleScore": 4.8
+        },
+        "2": {
+          "hole": 2,
+          "cumHoleScore": 51,
+          "avgHoleScore": 4.3
+        },
+        "3": {
+          "hole": 3,
+          "cumHoleScore": 63,
+          "avgHoleScore": 5.3
+        },
+        "4": {
+          "hole": 4,
+          "cumHoleScore": 66,
+          "avgHoleScore": 5.5
+        },
+        "5": {
+          "hole": 5,
+          "cumHoleScore": 69,
+          "avgHoleScore": 5.8
+        },
+        "6": {
+          "hole": 6,
+          "cumHoleScore": 74,
+          "avgHoleScore": 6.2
+        },
+        "7": {
+          "hole": 7,
+          "cumHoleScore": 76,
+          "avgHoleScore": 6.3
+        },
+        "8": {
+          "hole": 8,
+          "cumHoleScore": 59,
+          "avgHoleScore": 4.9
+        },
+        "9": {
+          "hole": 9,
+          "cumHoleScore": 64,
+          "avgHoleScore": 5.3
+        }
+      }
+    },
     {
       "name": "Eric Giovanola",
       "cumScore": 556,
@@ -459,64 +521,64 @@
       }
     },
     {
-      "name": "Eric Zamore",
-      "cumScore": 580,
-      "avgScore": 48.3,
-      "avgScoreToPar": 21.3,
-      "roundsPlayed": 12,
-      "roundsPlayedPercent": "100%",
+      "name": "Paul McDonald",
+      "cumScore": 99,
+      "avgScore": 49.5,
+      "avgScoreToPar": 22.5,
+      "roundsPlayed": 2,
+      "roundsPlayedPercent": "16.7%",
       "scoreDist": {
-        "3": 4,
-        "4": 23,
-        "5": 31,
-        "6": 29,
-        "7": 21
+        "3": 2,
+        "5": 7,
+        "6": 7,
+        "7": 1,
+        "9": 1
       },
       "scoresByHole": {
         "1": {
           "hole": 1,
-          "cumHoleScore": 58,
-          "avgHoleScore": 4.8
+          "cumHoleScore": 11,
+          "avgHoleScore": 5.5
         },
         "2": {
           "hole": 2,
-          "cumHoleScore": 51,
-          "avgHoleScore": 4.3
+          "cumHoleScore": 10,
+          "avgHoleScore": 5
         },
         "3": {
           "hole": 3,
-          "cumHoleScore": 63,
-          "avgHoleScore": 5.3
+          "cumHoleScore": 10,
+          "avgHoleScore": 5
         },
         "4": {
           "hole": 4,
-          "cumHoleScore": 66,
+          "cumHoleScore": 11,
           "avgHoleScore": 5.5
         },
         "5": {
           "hole": 5,
-          "cumHoleScore": 69,
-          "avgHoleScore": 5.8
+          "cumHoleScore": 11,
+          "avgHoleScore": 5.5
         },
         "6": {
           "hole": 6,
-          "cumHoleScore": 74,
-          "avgHoleScore": 6.2
+          "cumHoleScore": 12,
+          "avgHoleScore": 6
         },
         "7": {
           "hole": 7,
-          "cumHoleScore": 76,
-          "avgHoleScore": 6.3
+          "cumHoleScore": 8,
+          "avgHoleScore": 4
         },
         "8": {
           "hole": 8,
-          "cumHoleScore": 59,
-          "avgHoleScore": 4.9
+          "cumHoleScore": 12,
+          "avgHoleScore": 6
         },
         "9": {
           "hole": 9,
-          "cumHoleScore": 64,
-          "avgHoleScore": 5.3
+          "cumHoleScore": 14,
+          "avgHoleScore": 7
         }
       }
     },
@@ -701,68 +763,6 @@
           "hole": 9,
           "cumHoleScore": 26,
           "avgHoleScore": 6.5
-        }
-      }
-    },
-    {
-      "name": "Paul McDonald",
-      "cumScore": 99,
-      "avgScore": 49.5,
-      "avgScoreToPar": 22.5,
-      "roundsPlayed": 2,
-      "roundsPlayedPercent": "16.7%",
-      "scoreDist": {
-        "3": 2,
-        "5": 7,
-        "6": 7,
-        "7": 1,
-        "9": 1
-      },
-      "scoresByHole": {
-        "1": {
-          "hole": 1,
-          "cumHoleScore": 11,
-          "avgHoleScore": 5.5
-        },
-        "2": {
-          "hole": 2,
-          "cumHoleScore": 10,
-          "avgHoleScore": 5
-        },
-        "3": {
-          "hole": 3,
-          "cumHoleScore": 10,
-          "avgHoleScore": 5
-        },
-        "4": {
-          "hole": 4,
-          "cumHoleScore": 11,
-          "avgHoleScore": 5.5
-        },
-        "5": {
-          "hole": 5,
-          "cumHoleScore": 11,
-          "avgHoleScore": 5.5
-        },
-        "6": {
-          "hole": 6,
-          "cumHoleScore": 12,
-          "avgHoleScore": 6
-        },
-        "7": {
-          "hole": 7,
-          "cumHoleScore": 8,
-          "avgHoleScore": 4
-        },
-        "8": {
-          "hole": 8,
-          "cumHoleScore": 12,
-          "avgHoleScore": 6
-        },
-        "9": {
-          "hole": 9,
-          "cumHoleScore": 14,
-          "avgHoleScore": 7
         }
       }
     }
