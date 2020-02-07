@@ -1,10 +1,12 @@
 import cx from 'classnames';
 import moment from 'moment-timezone';
-import React, { Fragment } from 'react';
+import React from 'react';
 
-import Table from '../../components/Table';
+import Layout from '../components/Layout';
+import Table from '../components/Table';
 
-const HOLES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+import { HOLES } from '../constants';
+import STATS from '../data/stats.json';
 
 function getMaxMinHoleScores(scoresByHole) {
   return Object
@@ -43,9 +45,11 @@ function getMaxMinHoleScores(scoresByHole) {
     });
 }
 
-const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
+const StatsPage = ({ stats }) => {
+  const { globalScoresByHole, roundsByScore, statsByPlayer } = stats;
+
   return (
-    <Fragment>
+    <Layout title="Stats">
       <h3>Stats By Player</h3>
       <Table className="round-table">
         <thead>
@@ -157,8 +161,10 @@ const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
             ))}
         </tbody>
       </Table>
-    </Fragment>
+    </Layout>
   );
 };
 
-export default StatsView;
+StatsPage.getInitialProps = () => ({ stats: STATS });
+
+export default StatsPage;
