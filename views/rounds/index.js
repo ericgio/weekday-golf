@@ -1,6 +1,7 @@
 import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
-import { Table } from 'react-bootstrap';
+
+import Table from '../../components/Table';
 
 import './RoundsView.scss';
 
@@ -18,18 +19,20 @@ function sortBy(key) {
 const RoundsView = ({ rounds }) => (
   <Fragment>
     {rounds.sort(sortBy('date')).map(({ date, players, timezone }) => (
-      <div key={date}>
+      <Fragment key={date}>
         <h3>{moment.tz(date, timezone).format('ddd MMMM Do, YYYY')}</h3>
-        <Table className="round-table" size="sm">
+        <Table className="round-table">
           <thead>
             <tr>
               <th className="player-name">
                 Name
               </th>
               {HOLES.map((hole) => (
-                <th key={`hole-${hole}`}>{hole}</th>
+                <th key={`hole-${hole}`}>
+                  {hole}
+                </th>
               ))}
-              <th colSpan="2">
+              <th className="total">
                 Total
               </th>
             </tr>
@@ -45,13 +48,14 @@ const RoundsView = ({ rounds }) => (
                     {score}
                   </td>
                 ))}
-                <td>{total}</td>
-                <td>+{total - PAR}</td>
+                <td className="total">
+                  {total} <span className="to-par">+{total - PAR}</span>
+                </td>
               </tr>
             ))}
           </tbody>
         </Table>
-      </div>
+      </Fragment>
     ))}
   </Fragment>
 );

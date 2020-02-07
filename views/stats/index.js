@@ -1,7 +1,8 @@
 import cx from 'classnames';
 import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
-import { Table } from 'react-bootstrap';
+
+import Table from '../../components/Table';
 
 const HOLES = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -46,7 +47,7 @@ const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
   return (
     <Fragment>
       <h3>Stats By Player</h3>
-      <Table className="round-table" size="sm">
+      <Table className="round-table">
         <thead>
           <tr>
             <th className="player-name">
@@ -85,7 +86,7 @@ const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
       </Table>
 
       <h3>Average Score By Hole</h3>
-      <Table className="round-table" size="sm">
+      <Table className="round-table">
         <thead>
           <tr>
             <th className="player-name">
@@ -134,7 +135,7 @@ const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
       </Table>
 
       <h3>Best Rounds</h3>
-      <Table size="sm">
+      <Table className="round-table">
         <thead>
           <tr>
             <th className="player-name">

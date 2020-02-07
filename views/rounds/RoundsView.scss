@@ -1,11 +1,23 @@
+$border-color: rgba(0, 0, 0, 0.1);
+$border-style: 1px solid $border-color;
+
 .round-table {
   td, th {
     text-align: center,
   }
 
   .player-name {
+    border-right: $border-style;
     text-align: left;
     width: 33%;
+  }
+
+  .total {
+    border-left: $border-style;
+  }
+
+  .to-par {
+    margin-left: 10px;
   }
 
   .best-score {

@@ -1,0 +1,17 @@
+.app-table {
+  white-space: nowrap;
+
+  td, th {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 767px) {
+  .app-table {
+    font-size: 13px;
+
+    td, th {
+      padding: 4px;
+    }
+  }
+}
