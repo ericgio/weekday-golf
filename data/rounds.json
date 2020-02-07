@@ -1,7 +1,181 @@
 [
   {
-    "date": "2020-01-20T00:00:00-08:00",
+    "date": "2020-02-06T09:49:00-08:00",
+    "players": [
+      {
+        "name": "Eric Giovanola",
+        "scores": [
+          {
+            "hole": 1,
+            "score": 6
+          },
+          {
+            "hole": 2,
+            "score": 5
+          },
+          {
+            "hole": 3,
+            "score": 4
+          },
+          {
+            "hole": 4,
+            "score": 6
+          },
+          {
+            "hole": 5,
+            "score": 3
+          },
+          {
+            "hole": 6,
+            "score": 5
+          },
+          {
+            "hole": 7,
+            "score": 4
+          },
+          {
+            "hole": 8,
+            "score": 4
+          },
+          {
+            "hole": 9,
+            "score": 5
+          }
+        ],
+        "total": 42
+      },
+      {
+        "name": "Makinde Adeagbo",
+        "scores": [
+          {
+            "hole": 1,
+            "score": 4
+          },
+          {
+            "hole": 2,
+            "score": 6
+          },
+          {
+            "hole": 3,
+            "score": 3
+          },
+          {
+            "hole": 4,
+            "score": 5
+          },
+          {
+            "hole": 5,
+            "score": 5
+          },
+          {
+            "hole": 6,
+            "score": 5
+          },
+          {
+            "hole": 7,
+            "score": 6
+          },
+          {
+            "hole": 8,
+            "score": 4
+          },
+          {
+            "hole": 9,
+            "score": 4
+          }
+        ],
+        "total": 42
+      },
+      {
+        "name": "Ola Okelola",
+        "scores": [
+          {
+            "hole": 1,
+            "score": 5
+          },
+          {
+            "hole": 2,
+            "score": 5
+          },
+          {
+            "hole": 3,
+            "score": 6
+          },
+          {
+            "hole": 4,
+            "score": 7
+          },
+          {
+            "hole": 5,
+            "score": 5
+          },
+          {
+            "hole": 6,
+            "score": 6
+          },
+          {
+            "hole": 7,
+            "score": 7
+          },
+          {
+            "hole": 8,
+            "score": 5
+          },
+          {
+            "hole": 9,
+            "score": 5
+          }
+        ],
+        "total": 51
+      },
+      {
+        "name": "Eric Zamore",
+        "scores": [
+          {
+            "hole": 1,
+            "score": 5
+          },
+          {
+            "hole": 2,
+            "score": 3
+          },
+          {
+            "hole": 3,
+            "score": 6
+          },
+          {
+            "hole": 4,
+            "score": 5
+          },
+          {
+            "hole": 5,
+            "score": 7
+          },
+          {
+            "hole": 6,
+            "score": 7
+          },
+          {
+            "hole": 7,
+            "score": 6
+          },
+          {
+            "hole": 8,
+            "score": 4
+          },
+          {
+            "hole": 9,
+            "score": 10
+          }
+        ],
+        "total": 53
+      }
+    ],
     "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
+  },
+  {
+    "date": "2020-01-21T10:50:00-08:00",
     "players": [
       {
         "name": "Eric Zamore",
@@ -171,11 +345,12 @@
         ],
         "total": 51
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2020-01-09T00:00:00-08:00",
-    "location": "Mariner's Point",
+    "date": "2020-01-09T10:34:00-08:00",
     "players": [
       {
         "name": "Eric Giovanola",
@@ -345,11 +520,12 @@
         ],
         "total": 61
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-12-16T00:00:00-08:00",
-    "location": "Mariner's Point",
+    "date": "2019-12-16T10:48:00-08:00",
     "players": [
       {
         "name": "Eric Giovanola",
@@ -477,11 +653,12 @@
         ],
         "total": 51
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-12-06T00:00:00-08:00",
-    "location": "Mariner's Point",
+    "date": "2019-12-06T11:20:00-08:00",
     "players": [
       {
         "name": "Eric Giovanola",
@@ -609,11 +786,12 @@
         ],
         "total": 59
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-11-20T00:00:00-08:00",
-    "location": "Mariner's Point",
+    "date": "2019-11-20T10:05:00-08:00",
     "players": [
       {
         "name": "Eric Giovanola",
@@ -783,11 +961,12 @@
         ],
         "total": 56
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-11-04T00:00:00-08:00",
-    "location": "Mariner's Point",
+    "date": "2019-11-04T10:51:00-08:00",
     "players": [
       {
         "name": "Makinde Adeagbo",
@@ -957,11 +1136,12 @@
         ],
         "total": 50
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-10-21T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-10-21T11:10:00-07:00",
     "players": [
       {
         "name": "Makinde Adeagbo",
@@ -1131,11 +1311,12 @@
         ],
         "total": 61
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-10-09T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-10-09T10:21:00-07:00",
     "players": [
       {
         "name": "Eric Zamore",
@@ -1347,11 +1528,12 @@
         ],
         "total": 60
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-09-27T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-09-27T10:37:00-07:00",
     "players": [
       {
         "name": "Makinde Adeagbo",
@@ -1563,11 +1745,12 @@
         ],
         "total": 58
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-09-10T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-09-10T15:20:00-07:00",
     "players": [
       {
         "name": "Eric Zamore",
@@ -1695,11 +1878,12 @@
         ],
         "total": 58
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-08-20T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-08-20T10:44:00-07:00",
     "players": [
       {
         "name": "Makinde Adeagbo",
@@ -1869,11 +2053,12 @@
         ],
         "total": 53
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   },
   {
-    "date": "2019-06-26T00:00:00-07:00",
-    "location": "Mariner's Point",
+    "date": "2019-06-25T12:54:00-07:00",
     "players": [
       {
         "name": "Eric Giovanola",
@@ -2043,6 +2228,8 @@
         ],
         "total": 59
       }
-    ]
+    ],
+    "location": "Mariner's Point",
+    "timezone": "America/Los_Angeles"
   }
 ]

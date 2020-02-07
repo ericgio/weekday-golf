@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
 import { Table } from 'react-bootstrap';
 
@@ -145,13 +145,15 @@ const StatsView = ({ globalScoresByHole, roundsByScore, statsByPlayer }) => {
           </tr>
         </thead>
         <tbody>
-          {roundsByScore.slice(0, 10).map(({ date, name, toPar, total }) => (
-            <tr key={`${name}-${date}`}>
-              <td className="player-name">{name}</td>
-              <td>{total} (+{toPar})</td>
-              <td>{moment(date).format('MMMM Do, YYYY')}</td>
-            </tr>
-          ))}
+          {roundsByScore
+            .slice(0, 10)
+            .map(({ date, name, timezone, toPar, total }) => (
+              <tr key={`${name}-${date}`}>
+                <td className="player-name">{name}</td>
+                <td>{total} (+{toPar})</td>
+                <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
+              </tr>
+            ))}
         </tbody>
       </Table>
     </Fragment>

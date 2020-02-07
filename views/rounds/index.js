@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
 import { Table } from 'react-bootstrap';
 
@@ -17,9 +17,9 @@ function sortBy(key) {
 
 const RoundsView = ({ rounds }) => (
   <Fragment>
-    {rounds.sort(sortBy('date')).map(({ date, players }) => (
+    {rounds.sort(sortBy('date')).map(({ date, players, timezone }) => (
       <div key={date}>
-        <h3>{moment(date).format('ddd MMMM Do, YYYY')}</h3>
+        <h3>{moment.tz(date, timezone).format('ddd MMMM Do, YYYY')}</h3>
         <Table className="round-table" size="sm">
           <thead>
             <tr>

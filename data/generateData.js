@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const fs = require('fs');
 const { google } = require('googleapis');
-const moment = require('moment');
+const moment = require('moment-timezone');
 const path = require('path');
 
 const {
@@ -14,6 +14,7 @@ const {
 } = require('./utils');
 
 const { GOOGLE_SHEETS_API_KEY, SPREADSHEET_ID } = process.env;
+const CELL_RANGE = 'A3:J';
 const PAR = 27;
 
 // Initialize Sheets API.
@@ -31,7 +32,7 @@ async function parseSheet(sheet) {
 
   const { data } = await sheets.spreadsheets.values.get({
     ...options,
-    range: `${title}!A3:J`,
+    range: `${title}!${CELL_RANGE}`,
   });
 
   const players = data.values.map((row) => {
@@ -49,10 +50,11 @@ async function parseSheet(sheet) {
   });
 
   return {
-    date: moment(title, 'MM/DD/YY').format(),
+    date: moment(title).format(),
+    players,
     // TODO: Account for other locations.
     location: 'Mariner\'s Point',
-    players,
+    timezone: 'America/Los_Angeles',
   };
 }
 
