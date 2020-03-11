@@ -2,7 +2,7 @@
   "name": "weekday-golf",
   "version": "0.0.1",
   "scripts": {
-    "dev": "next",
+    "dev": "npm run data && next",
     "build": "npm run data && next build",
     "start": "next start -p $PORT",
     "data": "node data/generateData.js",

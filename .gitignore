@@ -3,5 +3,6 @@
 .env
 
 .next/
+data/*.json
 node_modules/
 yarn-error.log
