@@ -25,6 +25,10 @@ function normalizeName(name) {
     return 'Ola Okelola';
   }
 
+  if (name.indexOf('tom') > -1) {
+    return 'Tom Occhino';
+  }
+
   throw Error(`Who let ${name} play?`);
 }
 
