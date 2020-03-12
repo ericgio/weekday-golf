@@ -1,12 +1,22 @@
 import cx from 'classnames';
 import moment from 'moment-timezone';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
 
 import { HOLES } from '../constants';
 import STATS from '../data/stats.json';
+
+import './styles/Stats.scss';
+
+function sortBy(key) {
+  return (r1, r2) => {
+    if (r1[key] < r2[key]) return 1;
+    if (r1[key] > r2[key]) return -1;
+    return 0;
+  };
+}
 
 function getMaxMinHoleScores(scoresByHole) {
   return Object
@@ -45,8 +55,53 @@ function getMaxMinHoleScores(scoresByHole) {
     });
 }
 
+const SortArrow = ({ order }) => (
+  <span className="sortable-arrow">
+    {order === 'asc' ? '▲' : '▼'}
+  </span>
+);
+
+const SortableHeader = ({
+  children,
+  className,
+  onClick,
+  order,
+  selectedSortKey,
+  sortKey,
+}) => {
+  const arrow = sortKey === selectedSortKey ?
+    <SortArrow order={order} /> :
+    null;
+
+  return (
+    <th
+      className={cx('sortable', className)}
+      onClick={() => onClick(sortKey)}>
+      {children} {arrow}
+    </th>
+  );
+};
+
 const StatsPage = ({ stats }) => {
   const { globalScoresByHole, roundsByScore, statsByPlayer } = stats;
+  const [order, setOrder] = useState('desc');
+  const [selectedSortKey, setSelectedSortKey] = useState('avgScore');
+
+  const data = statsByPlayer.slice().sort(sortBy(selectedSortKey));
+  if (order === 'desc') {
+    data.reverse();
+  }
+
+  const handleHeaderClick = useCallback((sortKey) => {
+    let newOrder = sortKey === 'roundsPlayed' ? 'asc' : 'desc';
+
+    if (sortKey === selectedSortKey) {
+      newOrder = order === 'asc' ? 'desc' : 'asc';
+    }
+
+    setOrder(newOrder);
+    setSelectedSortKey(sortKey);
+  });
 
   return (
     <Layout title="Stats">
@@ -54,17 +109,34 @@ const StatsPage = ({ stats }) => {
       <Table className="round-table">
         <thead>
           <tr>
-            <th className="player-name">
+            <SortableHeader
+              className="player-name"
+              onClick={handleHeaderClick}
+              order={order}
+              selectedSortKey={selectedSortKey}
+              sortKey="name">
               Name
-            </th>
-            <th>Rounds Played</th>
-            <th>Avg. Score</th>
+            </SortableHeader>
+            <SortableHeader
+              onClick={handleHeaderClick}
+              order={order}
+              selectedSortKey={selectedSortKey}
+              sortKey="avgScore">
+              Avg. Score
+            </SortableHeader>
+            <SortableHeader
+              onClick={handleHeaderClick}
+              order={order}
+              selectedSortKey={selectedSortKey}
+              sortKey="roundsPlayed">
+              Rounds Played
+            </SortableHeader>
             <th>Best Hole</th>
             <th>Worst Hole</th>
           </tr>
         </thead>
         <tbody>
-          {statsByPlayer.map(({
+          {data.map(({
             name,
             avgScore,
             avgScoreToPar,
@@ -79,8 +151,8 @@ const StatsPage = ({ stats }) => {
                 <td className="player-name">
                   {name}
                 </td>
-                <td>{roundsPlayed} ({roundsPlayedPercent})</td>
                 <td>{avgScore} (+{avgScoreToPar})</td>
+                <td>{roundsPlayed} ({roundsPlayedPercent})</td>
                 <td>{min.holes.join(', ')} ({min.score})</td>
                 <td>{max.holes.join(', ')} ({max.score})</td>
               </tr>
