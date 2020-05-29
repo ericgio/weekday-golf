@@ -120,7 +120,7 @@ function getGlobalScoresByHole(acc, { roundsPlayed, scoresByHole }) {
   return acc;
 }
 
-function getRoundsByScore(acc, { date, location, players }) {
+function getRoundsByScore(acc, { date, location, players, timezone }) {
   players.forEach(({ name, total }) => {
     acc.push({
       date,
@@ -128,6 +128,7 @@ function getRoundsByScore(acc, { date, location, players }) {
       name,
       total,
       toPar: roundTo(total - PAR),
+      timezone,
     });
   });
 
