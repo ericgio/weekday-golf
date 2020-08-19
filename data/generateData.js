@@ -16,6 +16,7 @@ const {
 const { GOOGLE_SHEETS_API_KEY, SPREADSHEET_ID } = process.env;
 const CELL_RANGE = 'A3:J';
 const PAR = 27;
+const TOP_ROUNDS = 10;
 
 // Initialize Sheets API.
 const sheets = google.sheets({
@@ -135,18 +136,47 @@ function getRoundsByScore(acc, { date, location, players, timezone }) {
   return acc;
 }
 
+function getTopRoundsByScore(roundsByScore) {
+  roundsByScore = roundsByScore
+    .sort((r1, r2) => {
+      if (r1.total > r2.total) return 1;
+      if (r1.total < r2.total) return -1;
+      return 0;
+    });
+
+  const topRounds = [];
+  let currentPlace = 0; // Incremented by 1 the first time through the loop.
+  let currentScore = -1; // Overwritten the first time through the loop.
+  let numScoresAtCurrentPlace = 1;
+  for (let i = 0; i < roundsByScore.length; i++) {
+    if (roundsByScore[i].total === currentScore) {
+      // There's a tie.
+      numScoresAtCurrentPlace += 1;
+    } else {
+      // Increment the current place by however many players are tied
+      // at that score.
+      currentPlace += numScoresAtCurrentPlace;
+      currentScore = roundsByScore[i].total;
+      numScoresAtCurrentPlace = 1;
+    }
+    if (currentPlace > TOP_ROUNDS) {
+      // We've finished our leaderboard.
+      break;
+    }
+    topRounds.push({
+      ...roundsByScore[i],
+      place: currentPlace,
+    });
+  }
+  return topRounds;
+}
+
 function getStats(rounds) {
   const statsByPlayer = Object.values(rounds.reduce(getStatsByPlayer, {}));
 
   return {
     globalScoresByHole: statsByPlayer.reduce(getGlobalScoresByHole, {}),
-    roundsByScore: rounds
-      .reduce(getRoundsByScore, [])
-      .sort((r1, r2) => {
-        if (r1.total > r2.total) return 1;
-        if (r1.total < r2.total) return -1;
-        return 0;
-      }),
+    topRoundsByScore: getTopRoundsByScore(rounds.reduce(getRoundsByScore, [])),
     statsByPlayer,
   };
 }

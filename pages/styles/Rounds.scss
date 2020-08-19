@@ -6,6 +6,10 @@ $border-style: 1px solid $border-color;
     text-align: center,
   }
 
+  .player-place {
+    text-align: left;
+  }
+
   .player-name {
     border-right: $border-style;
     text-align: left;

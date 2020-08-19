@@ -83,7 +83,7 @@ const SortableHeader = ({
 };
 
 const StatsPage = ({ stats }) => {
-  const { globalScoresByHole, roundsByScore, statsByPlayer } = stats;
+  const { globalScoresByHole, topRoundsByScore, statsByPlayer } = stats;
   const [order, setOrder] = useState('desc');
   const [selectedSortKey, setSelectedSortKey] = useState('avgScore');
 
@@ -214,6 +214,7 @@ const StatsPage = ({ stats }) => {
       <Table className="round-table">
         <thead>
           <tr>
+            <th className="player-place">Place</th>
             <th className="player-name">
               Name
             </th>
@@ -222,10 +223,10 @@ const StatsPage = ({ stats }) => {
           </tr>
         </thead>
         <tbody>
-          {roundsByScore
-            .slice(0, 10)
-            .map(({ date, name, timezone, toPar, total }) => (
+          {topRoundsByScore
+            .map(({ date, place, name, timezone, toPar, total }) => (
               <tr key={`${name}-${date}`}>
+                <td>{place}</td>
                 <td className="player-name">{name}</td>
                 <td>{total} (+{toPar})</td>
                 <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
