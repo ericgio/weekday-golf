@@ -83,7 +83,12 @@ const SortableHeader = ({
 };
 
 const StatsPage = ({ stats }) => {
-  const { globalScoresByHole, topRoundsByScore, statsByPlayer } = stats;
+  const {
+    globalScoresByHole,
+    topRoundsByScore,
+    statsByPlayer,
+    MIN_ROUNDS,
+  } = stats;
   const [order, setOrder] = useState('desc');
   const [selectedSortKey, setSelectedSortKey] = useState('avgScore');
 
@@ -161,7 +166,7 @@ const StatsPage = ({ stats }) => {
         </tbody>
       </Table>
 
-      <h3>Average Score By Hole</h3>
+      <h3>Average Score By Hole (minimum {MIN_ROUNDS} rounds)</h3>
       <Table className="round-table">
         <thead>
           <tr>
@@ -172,7 +177,10 @@ const StatsPage = ({ stats }) => {
           </tr>
         </thead>
         <tbody>
-          {statsByPlayer.map(({ name, scoresByHole }) => {
+          {statsByPlayer.map(({ name, scoresByHole, roundsPlayed }) => {
+            if (roundsPlayed < MIN_ROUNDS) {
+              return null;
+            }
             const arr = Object.values(scoresByHole);
 
             return (

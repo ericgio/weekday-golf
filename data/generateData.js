@@ -17,6 +17,7 @@ const { GOOGLE_SHEETS_API_KEY, SPREADSHEET_ID } = process.env;
 const CELL_RANGE = 'A3:J';
 const PAR = 27;
 const TOP_ROUNDS = 10;
+const MIN_ROUNDS = 3;
 
 // Initialize Sheets API.
 const sheets = google.sheets({
@@ -100,6 +101,11 @@ function getStatsByPlayer(acc, { players }, index, rounds) {
 }
 
 function getGlobalScoresByHole(acc, { roundsPlayed, scoresByHole }) {
+  if (roundsPlayed < MIN_ROUNDS) {
+    // Ignore if the player hasn't played the minimum number of rounds.
+    return acc;
+  }
+
   Object.values(scoresByHole).forEach(({
     avgHoleScore,
     cumHoleScore,
@@ -178,6 +184,7 @@ function getStats(rounds) {
     globalScoresByHole: statsByPlayer.reduce(getGlobalScoresByHole, {}),
     topRoundsByScore: getTopRoundsByScore(rounds.reduce(getRoundsByScore, [])),
     statsByPlayer,
+    MIN_ROUNDS,
   };
 }
 
