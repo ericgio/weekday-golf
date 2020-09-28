@@ -18,6 +18,7 @@ const CELL_RANGE = 'A3:J';
 const PAR = 27;
 const TOP_ROUNDS = 10;
 const MIN_ROUNDS = 3;
+const RECENT_ROUND_COUNT = 8;
 
 // Initialize Sheets API.
 const sheets = google.sheets({
@@ -75,10 +76,15 @@ function getStatsByPlayer(acc, { players }, index, rounds) {
       scoreDist[score] = idx(scoreDist, score, 0) + 1;
 
       const cumHoleScore = idx(scoresByHole[hole], 'cumHoleScore', 0) + score;
+      const avgHoleScore = getAvg(cumHoleScore, roundsPlayed);
+      const recentAvgHoleScore = roundsPlayed > RECENT_ROUND_COUNT ?
+        idx(scoresByHole[hole], 'recentAvgHoleScore', 0) :
+        avgHoleScore;
       scoresByHole[hole] = {
         hole,
         cumHoleScore,
-        avgHoleScore: getAvg(cumHoleScore, roundsPlayed),
+        avgHoleScore,
+        recentAvgHoleScore,
       };
     });
 
@@ -178,6 +184,8 @@ function getTopRoundsByScore(roundsByScore) {
 }
 
 function getStats(rounds) {
+  // Ensure recent rounds come first so so they are preferred in stats
+  rounds.sort((a, b) => new Date(b.date) - new Date(a.date));
   const statsByPlayer = Object.values(rounds.reduce(getStatsByPlayer, {}));
 
   return {

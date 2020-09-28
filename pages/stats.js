@@ -10,6 +10,8 @@ import STATS from '../data/stats.json';
 
 import './styles/Stats.scss';
 
+const TRENDING_BUFFER = 0.2;
+
 function sortBy(key) {
   return (r1, r2) => {
     if (r1[key] < r2[key]) return 1;
@@ -89,6 +91,7 @@ const StatsPage = ({ stats }) => {
     statsByPlayer,
     MIN_ROUNDS,
   } = stats;
+
   const [order, setOrder] = useState('desc');
   const [selectedSortKey, setSelectedSortKey] = useState('avgScore');
 
@@ -96,6 +99,13 @@ const StatsPage = ({ stats }) => {
   if (order === 'desc') {
     data.reverse();
   }
+
+  const getBestRecentAvg = (statsByPlayer, hole) => {
+    const recentHoleAvgs = statsByPlayer
+      .filter(({ roundsPlayed }) => roundsPlayed >= MIN_ROUNDS)
+      .map(({ scoresByHole }) => scoresByHole[hole].recentAvgHoleScore);
+    return Math.min(...recentHoleAvgs);
+  };
 
   const handleHeaderClick = useCallback((sortKey) => {
     let newOrder = sortKey === 'roundsPlayed' ? 'asc' : 'desc';
@@ -166,7 +176,7 @@ const StatsPage = ({ stats }) => {
         </tbody>
       </Table>
 
-      <h3>Average Score By Hole (minimum {MIN_ROUNDS} rounds)</h3>
+      <h3>Recent Average Scores By Hole (minimum {MIN_ROUNDS} rounds)</h3>
       <Table className="round-table">
         <thead>
           <tr>
@@ -188,15 +198,25 @@ const StatsPage = ({ stats }) => {
                 <td className="player-name">
                   {name}
                 </td>
-                {arr.map(({ hole, avgHoleScore }) => {
-                  const { bestScore } = globalScoresByHole[hole];
+                {arr.map(({ hole, avgHoleScore, recentAvgHoleScore }) => {
+                  const bestRecentAvg = getBestRecentAvg(statsByPlayer, hole);
+                  const trend = recentAvgHoleScore - avgHoleScore;
+
                   return (
                     <td
                       className={cx({
-                        'best-score': avgHoleScore === bestScore,
+                        'best-score': recentAvgHoleScore === bestRecentAvg,
                       })}
-                      key={`avgHoleScore-${name}-${hole}`}>
-                      {avgHoleScore}
+                      key={`avgHoleScore-${name}-${hole}`}
+                      // eslint-disable-next-line max-len
+                      title={`Recent: ${recentAvgHoleScore}, All-time: ${avgHoleScore}`}>
+                      {recentAvgHoleScore}
+                      {trend > TRENDING_BUFFER && (
+                        <span className="trending-up">&nbsp;&#9650;</span>
+                      )}
+                      {trend < -TRENDING_BUFFER && (
+                        <span className="trending-down">&nbsp;&#9660;</span>
+                      )}
                     </td>
                   );
                 })}
