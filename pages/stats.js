@@ -90,6 +90,7 @@ const StatsPage = ({ stats }) => {
     topRoundsByScore,
     statsByPlayer,
     MIN_ROUNDS,
+    RECENT_ROUND_COUNT,
   } = stats;
 
   const [order, setOrder] = useState('desc');
@@ -176,7 +177,10 @@ const StatsPage = ({ stats }) => {
         </tbody>
       </Table>
 
-      <h3>Recent Average Scores By Hole (minimum {MIN_ROUNDS} rounds)</h3>
+      <h3>Average Score By Hole</h3>
+      <div className="avg-score-explanation">
+        Most recent {RECENT_ROUND_COUNT} rounds, minimum {MIN_ROUNDS} rounds
+      </div>
       <Table className="round-table">
         <thead>
           <tr>

@@ -77,6 +77,9 @@ function getStatsByPlayer(acc, { players }, index, rounds) {
 
       const cumHoleScore = idx(scoresByHole[hole], 'cumHoleScore', 0) + score;
       const avgHoleScore = getAvg(cumHoleScore, roundsPlayed);
+      // The scores are sorted in reverse chronological order. Thus, after we've
+      // examined RECENT_ROUND_COUNT rounds, recentAvgHoleScore stays constant
+      // (per hole).
       const recentAvgHoleScore = roundsPlayed > RECENT_ROUND_COUNT ?
         idx(scoresByHole[hole], 'recentAvgHoleScore', 0) :
         avgHoleScore;
@@ -184,7 +187,7 @@ function getTopRoundsByScore(roundsByScore) {
 }
 
 function getStats(rounds) {
-  // Ensure recent rounds come first so so they are preferred in stats
+  // Ensure recent rounds come first so they are preferred in stats
   rounds.sort((a, b) => new Date(b.date) - new Date(a.date));
   const statsByPlayer = Object.values(rounds.reduce(getStatsByPlayer, {}));
 
@@ -193,6 +196,7 @@ function getStats(rounds) {
     topRoundsByScore: getTopRoundsByScore(rounds.reduce(getRoundsByScore, [])),
     statsByPlayer,
     MIN_ROUNDS,
+    RECENT_ROUND_COUNT,
   };
 }
 
