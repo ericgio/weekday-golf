@@ -211,13 +211,15 @@ const StatsPage = ({ stats }) => {
                       className={cx({
                         'best-score': recentAvgHoleScore === bestRecentAvg,
                       })}
-                      key={`avgHoleScore-${name}-${hole}`}
-                      // eslint-disable-next-line max-len
-                      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                      tabIndex={0}
-                      // eslint-disable-next-line max-len
-                      title={`Recent: ${recentAvgHoleScore}, All-time: ${avgHoleScore}`}>
-                      {recentAvgHoleScore}
+                      key={`avgHoleScore-${name}-${hole}`}>
+                      <span
+                        // eslint-disable-next-line max-len
+                        title={`Recent: ${recentAvgHoleScore}, All-time: ${avgHoleScore}`}
+                        // eslint-disable-next-line max-len
+                        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+                        tabIndex={0}>
+                        {recentAvgHoleScore}
+                      </span>
                       {trend > TRENDING_BUFFER && (
                         <span className="trending-up">&nbsp;&#9650;</span>
                       )}
