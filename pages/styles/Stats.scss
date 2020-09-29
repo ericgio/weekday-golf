@@ -22,3 +22,22 @@
   color: gray;
   font-style: italic;
 }
+
+// https://stackoverflow.com/a/60660207
+@media (pointer: coarse), (hover: none) {
+  [title] {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+  }
+  [title]:focus::after {
+    content: attr(title);
+    position: absolute;
+    top: 90%;
+    color: #fff;
+    background-color: #000;
+    width: fit-content;
+    padding: 3px;
+    z-index: 100;
+  }
+}
