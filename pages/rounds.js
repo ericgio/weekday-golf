@@ -1,26 +1,30 @@
 import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import sumBy from 'lodash/sumBy';
+import orderBy from 'lodash/orderBy';
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
+import getAllRoundsAndScores from '../data/getAllRoundScores';
 
 import { HOLES, PAR } from '../constants';
-import ROUNDS from '../data/rounds.json';
 
 import './styles/Rounds.scss';
 
-function sortBy(key) {
-  return (r1, r2) => {
-    if (r1[key] < r2[key]) return 1;
-    if (r1[key] > r2[key]) return -1;
-    return 0;
-  };
-}
+/**
+ * @typedef {import('../data/types').Round} Round
+ * @typedef {import('../data/types').Score} Score
+ *
+ * @param {{ rounds: Round[], scores: Score[] }} props
+ */
+const RoundsPage = (props) => {
+  const { rounds, scores } = props;
 
-const RoundsPage = ({ rounds }) => {
   return (
     <Layout title="Rounds">
-      {rounds.sort(sortBy('date')).map(({ date, players, timezone }) => (
+      {rounds.map(({ id, date, players, timezone }) => (
         <Fragment key={date}>
           <h3>{moment.tz(date, timezone).format('ddd MMMM Do, YYYY')}</h3>
           <Table className="round-table">
@@ -40,21 +44,27 @@ const RoundsPage = ({ rounds }) => {
               </tr>
             </thead>
             <tbody>
-              {players.map(({ name, scores, total }) => (
-                <tr key={name}>
-                  <td className="player-name">
-                    {name}
-                  </td>
-                  {scores.map(({ hole, score }) => (
-                    <td key={`${date}-${name}-${hole}`}>
-                      {score}
+              {players.map((name) => {
+                const playerRoundScores = filter(scores, { round: id, name });
+                const roundTotal = sumBy(playerRoundScores, 'score');
+
+                return (
+                  <tr key={name}>
+                    <td className="player-name">
+                      {name}
                     </td>
-                  ))}
-                  <td className="total">
-                    {total} <span className="to-par">+{total - PAR}</span>
-                  </td>
-                </tr>
-              ))}
+                    {HOLES.map((hole) => (
+                      <td key={`${date}-${name}-${hole}`}>
+                        {find(playerRoundScores, { hole }).score}
+                      </td>
+                    ))}
+                    <td className="total">
+                      {roundTotal}
+                      <span className="to-par">+{roundTotal - PAR}</span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         </Fragment>
@@ -63,6 +73,16 @@ const RoundsPage = ({ rounds }) => {
   );
 };
 
-RoundsPage.getInitialProps = () => ({ rounds: ROUNDS });
+export async function getStaticProps() {
+  const { rounds, scores } = await getAllRoundsAndScores();
+
+  return {
+    props: {
+      rounds: orderBy(rounds, ['date'], ['desc']),
+      scores,
+    },
+    revalidate: 30,
+  };
+}
 
 export default RoundsPage;
