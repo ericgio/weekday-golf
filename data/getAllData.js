@@ -19,12 +19,30 @@ const options = {
 };
 
 /**
- * @typedef {import('../data/types').Round} Round
- * @typedef {import('../data/types').Score} Score
- *
+ * Overview data for a round of golf
+ * @typedef {{
+ *   id: string,
+ *   date: string,
+ *   location:string,
+ *   timezone: string,
+ *   players: string[]
+ * }} Round
+ */
+
+/**
+ * A score on an individual hole
+ * @typedef {{
+ *   name: string,
+ *   round: string,
+ *   hole: number,
+ *   score: number,
+ * }} Score
+ */
+
+/**
  * @returns {Promise<{ rounds: Round[], scores: Score[] }>}
  */
-export default async function getAllRoundsAndScores() {
+export default async function getAllData() {
   // Get overview information for spreadsheet (including list of sheet names)
   const { data: { sheets } } = await SheetsAPI.spreadsheets.get(options);
 
