@@ -1,9 +1,6 @@
 import moment from 'moment-timezone';
 import React, { Fragment } from 'react';
-import filter from 'lodash/filter';
-import find from 'lodash/find';
-import sumBy from 'lodash/sumBy';
-import orderBy from 'lodash/orderBy';
+import { filter, find, sumBy, orderBy } from 'lodash';
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
