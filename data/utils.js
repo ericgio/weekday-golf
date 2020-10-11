@@ -1,65 +1,138 @@
-function normalizeName(name) {
-  name = name.toLowerCase();
+import {
+  round, groupBy, sumBy, sortBy, orderBy, filter, first, last, isEmpty,
+  zipObject,
+} from 'lodash';
 
-  if (name.indexOf('eric g') > -1) {
-    return 'Eric Giovanola';
-  }
+import { PLAYERS, HOLES } from '../constants';
 
-  if (name.indexOf('eric z') > -1) {
-    return 'Eric Zamore';
-  }
+export function getPlayerInfo(search) {
+  search = search.toLowerCase();
 
-  if (name.indexOf('paul') > -1) {
-    return 'Paul McDonald';
-  }
+  const player = PLAYERS.find(({ spreadsheetKey, id }) => (
+    search.includes(spreadsheetKey) || id === search
+  ));
 
-  if (name.indexOf('raylene') > -1) {
-    return 'Raylene Yung';
-  }
+  if (!player) throw Error(`Who let ${search} play?`);
 
-  if (name.indexOf('makinde') > -1) {
-    return 'Makinde Adeagbo';
-  }
+  return player;
+}
 
-  if (name.indexOf('ola') > -1) {
-    return 'Ola Okelola';
-  }
-
-  if (name.indexOf('tom') > -1) {
-    return 'Tom Occhino';
-  }
-
-  throw Error(`Who let ${name} play?`);
+export function getAvg(numerator, denominator, precision = 1) {
+  return round(numerator / denominator, precision);
 }
 
 /**
- * Null-safe way of indexing into an object's properties.
- * Returns the value or a specified default value.
+ * @typedef {import('./getAllData').Score} Score
+ * @typedef {import('./getAllData').Round} Round
  */
-function idx(obj, key, defaultValue) {
-  return (obj && obj[key]) || defaultValue;
+
+/**
+ * Stats for a player's round of golf
+ * @typedef {{
+ *   round: string,
+ *   player: string,
+ *   total: number,
+ * }} PlayerRoundSummary
+ */
+
+/**
+ * @param {Score[]} scores
+ * @returns {PlayerRoundSummary[]}
+ */
+function getPlayerRoundSummaries(scores) {
+  const groupedScores = groupBy(
+    scores,
+    ({ player, round }) => `${player}-${round}`
+  );
+
+  return Object.values(groupedScores).map((scoreList) => {
+    const { round, player } = scoreList[0];
+    const total = sumBy(scoreList, 'score');
+
+    return { round, player, total };
+  });
 }
 
 /**
- * Round a number to the specified level of precision.
+ * @param {Score[]} scores
+ * @param {number} limit
+ * @returns {PlayerRoundSummary[]}
  */
-function roundTo(value, precision = 0) {
-  const multiplier = 10 ** precision;
-  return Math.round(value * multiplier) / multiplier;
+export function getTopRounds(scores, limit) {
+  const summaries = getPlayerRoundSummaries(scores);
+  const topRounds = sortBy(summaries, ['total']);
+  const losers = topRounds.splice(limit);
+
+  // Move over any rounds that are tied for last place
+  while (!isEmpty(losers) && last(topRounds).total === first(losers).total) {
+    topRounds.push(losers.shift());
+  }
+
+  return topRounds;
 }
 
-function getAvg(numerator, denominator, precision = 1) {
-  return roundTo(numerator / denominator, precision);
+/**
+ * @param {Round[]} rounds
+ * @param {string} player
+ * @returns {number}
+ */
+export function getRoundsPlayed(rounds, player) {
+  return rounds.filter(({ players }) => players.includes(player)).length;
 }
 
-function getRoundsPlayedPercentage(roundsPlayed, totalRounds) {
-  return `${roundTo((roundsPlayed * 100) / totalRounds, 1)}%`;
+/**
+ *
+ * @param {Round[]} rounds
+ * @param {string} player
+ * @param {number} limit
+ * @returns {string[]} round ids
+ */
+export function getRecentPlayerRounds(rounds, player, limit) {
+  const sortedRounds = orderBy(rounds, ['date'], ['desc']);
+  return sortedRounds
+    .filter((round) => round.players.includes(player))
+    .slice(0, limit)
+    .map((round) => round.id);
 }
 
-module.exports = {
-  getAvg,
-  getRoundsPlayedPercentage,
-  idx,
-  normalizeName,
-  roundTo,
-};
+/**
+ * @param {Round[]} rounds
+ * @param {string} player
+ * @returns {number}
+ */
+export function getRoundsPlayedPercentage(rounds, player) {
+  const roundsPlayed = getRoundsPlayed(rounds, player);
+  return round((roundsPlayed * 100) / rounds.length, 1);
+}
+
+/**
+ * @param {Score[]} scores
+ * @returns {number}
+ */
+export function getAvgRoundScore(scores) {
+  const summaries = getPlayerRoundSummaries(scores);
+
+  return getAvg(sumBy(summaries, 'total'), summaries.length);
+}
+
+/**
+ * @param {Score[]} scores
+ * @param {number} hole
+ * @returns {number}
+ */
+export function getHoleAvg(scores, hole) {
+  const holeScores = filter(scores, { hole });
+
+  return getAvg(sumBy(holeScores, 'score'), holeScores.length);
+}
+
+/**
+ * @param {Score[]} scores
+ * @returns {Object<number, number>}
+ */
+export function getHoleAvgs(scores) {
+  return zipObject(
+    HOLES,
+    HOLES.map((hole) => getHoleAvg(scores, hole)),
+  );
+}

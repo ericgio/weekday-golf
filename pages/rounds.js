@@ -5,6 +5,7 @@ import { filter, find, sumBy, orderBy } from 'lodash';
 import Layout from '../components/Layout';
 import Table from '../components/Table';
 import getAllData from '../data/getAllData';
+import { getPlayerInfo } from '../data/utils';
 
 import { HOLES, PAR } from '../constants';
 
@@ -38,17 +39,17 @@ const RoundsPage = ({ rounds, scores }) => (
             </tr>
           </thead>
           <tbody>
-            {players.map((name) => {
-              const playerRoundScores = filter(scores, { round: id, name });
+            {players.map((player) => {
+              const playerRoundScores = filter(scores, { round: id, player });
               const roundTotal = sumBy(playerRoundScores, 'score');
 
               return (
-                <tr key={name}>
+                <tr key={player}>
                   <td className="player-name">
-                    {name}
+                    {getPlayerInfo(player).name}
                   </td>
                   {HOLES.map((hole) => (
-                    <td key={`${date}-${name}-${hole}`}>
+                    <td key={`${date}-${player}-${hole}`}>
                       {find(playerRoundScores, { hole }).score}
                     </td>
                   ))}
