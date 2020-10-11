@@ -1,5 +1,13 @@
 import {
-  round, groupBy, sumBy, sortBy, orderBy, filter, first, last, isEmpty,
+  round,
+  groupBy,
+  sumBy,
+  sortBy,
+  orderBy,
+  filter,
+  first,
+  last,
+  isEmpty,
   zipObject,
 } from 'lodash';
 

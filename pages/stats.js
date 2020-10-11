@@ -2,7 +2,16 @@ import cx from 'classnames';
 import moment from 'moment-timezone';
 import React, { useCallback, useState } from 'react';
 import {
-  orderBy, filter, find, mean, values, sortBy, min, map, round as roundTo,
+  orderBy,
+  filter,
+  find,
+  mean,
+  values,
+  sortBy,
+  min,
+  map,
+  round as
+  roundTo,
 } from 'lodash';
 
 import Layout from '../components/Layout';
