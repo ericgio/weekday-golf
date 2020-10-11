@@ -1,7 +1,7 @@
-const { google } = require('googleapis');
-const moment = require('moment-timezone');
+import { google } from 'googleapis';
+import moment from 'moment-timezone';
 
-const { normalizeName } = require('./utils');
+import { getPlayerInfo } from './utils';
 
 const { GOOGLE_SHEETS_API_KEY, SPREADSHEET_ID } = process.env;
 
@@ -32,7 +32,7 @@ const options = {
 /**
  * A score on an individual hole
  * @typedef {{
- *   name: string,
+ *   player: string,
  *   round: string,
  *   hole: number,
  *   score: number,
@@ -58,27 +58,31 @@ export default async function getAllData() {
   const scores = [];
   data.valueRanges.forEach(({ range, values }) => {
     const [, title] = TITLE_RANGE_REGEX.exec(range);
-
-    rounds.push({
-      id: title,
-      date: moment(title).format(),
-      players: values.map((row) => normalizeName(row[0])),
-      // TODO: Account for other locations.
-      location: 'Mariner\'s Point',
-      timezone: 'America/Los_Angeles',
-    });
+    const roundId = title;
+    const roundPlayers = [];
 
     values.forEach((row) => {
-      const player = row.shift();
+      const playerKey = row.shift();
+      const { id: playerId } = getPlayerInfo(playerKey);
+      roundPlayers.push(playerId);
 
       row.forEach((score, idx) => {
         scores.push({
-          name: normalizeName(player),
-          round: title,
+          player: playerId,
+          round: roundId,
           hole: idx + 1,
           score: parseInt(score, 10),
         });
       });
+    });
+
+    rounds.push({
+      id: roundId,
+      date: moment(title).format(),
+      players: roundPlayers,
+      // TODO: Account for other locations.
+      location: 'Mariner\'s Point',
+      timezone: 'America/Los_Angeles',
     });
   });
 

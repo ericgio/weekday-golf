@@ -1,61 +1,46 @@
 import cx from 'classnames';
 import moment from 'moment-timezone';
 import React, { useCallback, useState } from 'react';
+import {
+  orderBy,
+  filter,
+  find,
+  mean,
+  values,
+  sortBy,
+  min,
+  map,
+  round as
+  roundTo,
+} from 'lodash';
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
+import getAllData from '../data/getAllData';
 
-import { HOLES } from '../constants';
-import STATS from '../data/stats.json';
+import { HOLES, PAR, PLAYERS } from '../constants';
+
+import {
+  getAvgRoundScore,
+  getRoundsPlayed,
+  getRoundsPlayedPercentage,
+  getTopRounds,
+  getPlayerInfo,
+  getHoleAvgs,
+  getRecentPlayerRounds,
+} from '../data/utils';
 
 import './styles/Stats.scss';
 
+/**
+ * @typedef {import('../data/getAllData').Round} Round
+ * @typedef {import('../data/utils').PlayerRoundSummary} PlayerRoundSummary
+ */
+
 const TRENDING_BUFFER = 0.2;
-
-function sortBy(key) {
-  return (r1, r2) => {
-    if (r1[key] < r2[key]) return 1;
-    if (r1[key] > r2[key]) return -1;
-    return 0;
-  };
-}
-
-function getMaxMinHoleScores(scoresByHole) {
-  return Object
-    .values(scoresByHole)
-    .reduce((acc, { avgHoleScore, hole }) => {
-      const { max, min } = acc;
-
-      if (avgHoleScore === max.score) {
-        max.holes.push(hole);
-      }
-
-      if (avgHoleScore === min.score) {
-        min.holes.push(hole);
-      }
-
-      if (avgHoleScore > max.score) {
-        max.holes = [hole];
-        max.score = avgHoleScore;
-      }
-
-      if (avgHoleScore < min.score) {
-        min.holes = [hole];
-        min.score = avgHoleScore;
-      }
-
-      return { max, min };
-    }, {
-      max: {
-        holes: [],
-        score: 0,
-      },
-      min: {
-        holes: [],
-        score: 100,
-      },
-    });
-}
+const TOP_ROUNDS = 10;
+const MIN_ROUNDS = 3;
+const RECENT_ROUND_COUNT = 8;
 
 const SortArrow = ({ order }) => (
   <span className="sortable-arrow">
@@ -84,32 +69,53 @@ const SortableHeader = ({
   );
 };
 
-const StatsPage = ({ stats }) => {
-  const {
-    globalScoresByHole,
-    topRoundsByScore,
-    statsByPlayer,
-    MIN_ROUNDS,
-    RECENT_ROUND_COUNT,
-  } = stats;
+/**
+ * @param {{ rounds: Round[], topRounds: PlayerRoundSummary[] }} props
+ */
+const BestRoundsTable = ({ rounds, topRounds }) => {
+  let place = 1;
 
-  const [order, setOrder] = useState('desc');
-  const [selectedSortKey, setSelectedSortKey] = useState('avgScore');
+  return (
+    <Table className="round-table">
+      <thead>
+        <tr>
+          <th className="player-place">Place</th>
+          <th className="player-name">
+              Name
+          </th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {topRounds.map(({ round, player, total }, idx) => {
+          const { date, timezone } = find(rounds, { id: round });
+          const { name } = getPlayerInfo(player);
+          if (idx > 0 && total !== topRounds[idx - 1].total) place = idx + 1;
 
-  const data = statsByPlayer.slice().sort(sortBy(selectedSortKey));
-  if (order === 'desc') {
-    data.reverse();
-  }
+          return (
+            <tr key={`${name}-${date}`}>
+              <td>{place}</td>
+              <td className="player-name">{name}</td>
+              <td>{total} (+{roundTo(total - PAR, 1)})</td>
+              <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </Table>
+  );
+};
 
-  const getBestRecentAvg = (statsByPlayer, hole) => {
-    const recentHoleAvgs = statsByPlayer
-      .filter(({ roundsPlayed }) => roundsPlayed >= MIN_ROUNDS)
-      .map(({ scoresByHole }) => scoresByHole[hole].recentAvgHoleScore);
-    return Math.min(...recentHoleAvgs);
-  };
+/**
+ * @param {props} props
+ */
+const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
+  const [order, setOrder] = useState('asc');
+  const [selectedSortKey, setSelectedSortKey] = useState('roundAvg');
 
   const handleHeaderClick = useCallback((sortKey) => {
-    let newOrder = sortKey === 'roundsPlayed' ? 'asc' : 'desc';
+    let newOrder = sortKey === 'roundsPlayed' ? 'desc' : 'asc';
 
     if (sortKey === selectedSortKey) {
       newOrder = order === 'asc' ? 'desc' : 'asc';
@@ -137,7 +143,7 @@ const StatsPage = ({ stats }) => {
               onClick={handleHeaderClick}
               order={order}
               selectedSortKey={selectedSortKey}
-              sortKey="avgScore">
+              sortKey="roundAvg">
               Avg. Score
             </SortableHeader>
             <SortableHeader
@@ -152,25 +158,27 @@ const StatsPage = ({ stats }) => {
           </tr>
         </thead>
         <tbody>
-          {data.map(({
+          {orderBy(playerStats, [selectedSortKey], [order]).map(({
             name,
-            avgScore,
-            avgScoreToPar,
+            roundAvg,
             roundsPlayed,
-            roundsPlayedPercent,
-            scoresByHole,
+            roundsPlayedPercentage,
+            holeAvgs,
           }) => {
-            const { max, min } = getMaxMinHoleScores(scoresByHole);
+            const min = Math.min(...Object.values(holeAvgs));
+            const max = Math.max(...Object.values(holeAvgs));
+            const minHoles = HOLES.filter((hole) => holeAvgs[hole] === min);
+            const maxHoles = HOLES.filter((hole) => holeAvgs[hole] === max);
 
             return (
               <tr key={name}>
                 <td className="player-name">
                   {name}
                 </td>
-                <td>{avgScore} (+{avgScoreToPar})</td>
-                <td>{roundsPlayed} ({roundsPlayedPercent})</td>
-                <td>{min.holes.join(', ')} ({min.score})</td>
-                <td>{max.holes.join(', ')} ({max.score})</td>
+                <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
+                <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
+                <td>{minHoles.join(', ')} ({min})</td>
+                <td>{maxHoles.join(', ')} ({max})</td>
               </tr>
             );
           })}
@@ -191,47 +199,43 @@ const StatsPage = ({ stats }) => {
           </tr>
         </thead>
         <tbody>
-          {statsByPlayer.map(({ name, scoresByHole, roundsPlayed }) => {
-            if (roundsPlayed < MIN_ROUNDS) {
-              return null;
-            }
-            const arr = Object.values(scoresByHole);
-
-            return (
+          {sortBy(playerStats, [(stat) => mean(values(stat.recentHoleAvgs))])
+            .filter((stat) => stat.roundsPlayed >= MIN_ROUNDS)
+            .map(({ name, holeAvgs, recentHoleAvgs, roundsPlayed }, i, arr) => (
               <tr key={name}>
                 <td className="player-name">
                   {name}
                 </td>
-                {arr.map(({ hole, avgHoleScore, recentAvgHoleScore }) => {
-                  const bestRecentAvg = getBestRecentAvg(statsByPlayer, hole);
-                  const trend = recentAvgHoleScore - avgHoleScore;
+                {HOLES.map((hole) => {
+                  const bestRecentAvg = min(map(arr, `recentHoleAvgs.${hole}`));
+                  const holeAvg = holeAvgs[hole];
+                  const recentHoleAvg = recentHoleAvgs[hole];
+                  const trend = recentHoleAvg - holeAvg;
 
                   return (
                     <td
                       className={cx({
-                        'best-score': recentAvgHoleScore === bestRecentAvg,
+                        'best-score': recentHoleAvg === bestRecentAvg,
                       })}
                       key={`avgHoleScore-${name}-${hole}`}>
                       <span
-                        // eslint-disable-next-line max-len
-                        title={`Recent: ${recentAvgHoleScore}, All-time: ${avgHoleScore}`}
+                        title={`Recent: ${recentHoleAvg}, All-time: ${holeAvg}`}
                         // eslint-disable-next-line max-len
                         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
                         tabIndex={0}>
-                        {recentAvgHoleScore}
+                        {recentHoleAvg}
                       </span>
                       {trend > TRENDING_BUFFER && (
-                        <span className="trending-up">&nbsp;&#9650;</span>
+                      <span className="trending-up">&nbsp;&#9650;</span>
                       )}
                       {trend < -TRENDING_BUFFER && (
-                        <span className="trending-down">&nbsp;&#9660;</span>
+                      <span className="trending-down">&nbsp;&#9660;</span>
                       )}
                     </td>
                   );
                 })}
               </tr>
-            );
-          })}
+            ))}
         </tbody>
         <thead>
           <tr>
@@ -240,7 +244,7 @@ const StatsPage = ({ stats }) => {
             </th>
             {HOLES.map((hole) => (
               <th key={hole}>
-                {globalScoresByHole[hole].avgHoleScore}
+                {globalHoleAvgs[hole]}
               </th>
             ))}
           </tr>
@@ -248,33 +252,63 @@ const StatsPage = ({ stats }) => {
       </Table>
 
       <h3>Best Rounds</h3>
-      <Table className="round-table">
-        <thead>
-          <tr>
-            <th className="player-place">Place</th>
-            <th className="player-name">
-              Name
-            </th>
-            <th>Score</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {topRoundsByScore
-            .map(({ date, place, name, timezone, toPar, total }) => (
-              <tr key={`${name}-${date}`}>
-                <td>{place}</td>
-                <td className="player-name">{name}</td>
-                <td>{total} (+{toPar})</td>
-                <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+      <BestRoundsTable topRounds={topRounds} rounds={rounds} />
     </Layout>
   );
 };
 
-StatsPage.getInitialProps = () => ({ stats: STATS });
+/**
+ * props
+ * @typedef {{
+ *   rounds: Round[],
+ *   topRounds: PlayerRoundSummary[],
+ *   globalHoleAvgs: Object<number, number>,
+ *   playerStats: {
+ *     id: string,
+ *     name: string,
+ *     roundAvg: number,
+ *     roundsPlayed: number,
+ *     roundsPlayedPercentage: number,
+ *     holeAvgs: Object<number, number>,
+ *     recentHoleAvgs: Object<number, number>,
+ *   },
+ * }} props
+ *
+ * @returns {{ props: props, revalidate: number }}
+ */
+export async function getStaticProps() {
+  const { rounds, scores } = await getAllData();
+
+  const topRounds = getTopRounds(scores, TOP_ROUNDS);
+  const globalHoleAvgs = getHoleAvgs(scores);
+
+  const playerStats = PLAYERS.map(({ id, name }) => {
+    const playerScores = filter(scores, { player: id });
+    const recentRounds = getRecentPlayerRounds(rounds, id, RECENT_ROUND_COUNT);
+    const recentPlayerScores = playerScores.filter(
+      (score) => recentRounds.includes(score.round)
+    );
+
+    return {
+      id,
+      name,
+      roundAvg: getAvgRoundScore(playerScores),
+      roundsPlayed: getRoundsPlayed(rounds, id),
+      roundsPlayedPercentage: getRoundsPlayedPercentage(rounds, id),
+      holeAvgs: getHoleAvgs(playerScores),
+      recentHoleAvgs: getHoleAvgs(recentPlayerScores),
+    };
+  });
+
+  return {
+    props: {
+      rounds,
+      topRounds,
+      globalHoleAvgs,
+      playerStats,
+    },
+    revalidate: 30,
+  };
+}
 
 export default StatsPage;
