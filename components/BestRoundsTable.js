@@ -23,7 +23,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
         <tr>
           <th className="player-place">Place</th>
           <th className="player-name">
-              Name
+            Name
           </th>
           <th>Score</th>
           <th>Date</th>

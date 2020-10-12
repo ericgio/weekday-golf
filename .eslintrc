@@ -5,7 +5,7 @@
     "node": true
   },
   "extends": [
-    "ericgio",
+    "@ericgio/eslint-config-react",
   ],
   "parser": "babel-eslint",
   "rules": {
