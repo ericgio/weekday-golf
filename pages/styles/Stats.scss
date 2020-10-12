@@ -1,43 +1,26 @@
+.arrow {
+  font-size: 85%;
+}
+
 .sortable {
   cursor: pointer;
-
-  &-arrow {
-    font-size: 85%;
-  }
 }
 
 .best-score {
-  background-color: yellow;
+  background-color: #ffffbb;
 }
 
 .trending-up {
-  color: #ffcccc;
+  color: #ff4040;
 }
 
 .trending-down {
-  color: #ccffdd;
+  color: #4caf50;
 }
 
 .avg-score-explanation {
-  color: gray;
+  color: #808080;
+  font-size: 0.85em;
   font-style: italic;
-}
-
-// https://stackoverflow.com/a/60660207
-@media (pointer: coarse), (hover: none) {
-  [title] {
-    position: relative;
-    display: inline-flex;
-    justify-content: center;
-  }
-  [title]:focus::after {
-    content: attr(title);
-    position: absolute;
-    top: 90%;
-    color: #fff;
-    background-color: #000;
-    width: fit-content;
-    padding: 3px;
-    z-index: 100;
-  }
+  margin-bottom: 10px;
 }

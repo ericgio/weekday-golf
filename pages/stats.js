@@ -1,5 +1,4 @@
 import cx from 'classnames';
-import React, { useCallback, useState } from 'react';
 import {
   orderBy,
   filter,
@@ -11,6 +10,8 @@ import {
   round as
   roundTo,
 } from 'lodash';
+import React, { useCallback, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
@@ -40,11 +41,29 @@ const TOP_ROUNDS = 10;
 const MIN_ROUNDS = 3;
 const RECENT_ROUND_COUNT = 8;
 
-const SortArrow = ({ order }) => (
-  <span className="sortable-arrow">
-    {order === 'asc' ? '▲' : '▼'}
+const Arrow = ({ className, dir, ...props }) => (
+  <span
+    {...props}
+    className={cx('arrow', className)}>
+    {dir === 'up' ? '▲' : '▼'}
   </span>
 );
+
+const SortArrow = ({ order }) => (
+  <Arrow dir={order === 'asc' ? 'up' : 'down'} />
+);
+
+const TrendArrow = ({ trend }) => {
+  if (trend > TRENDING_BUFFER) {
+    return <Arrow className="trending-up" dir="up" />;
+  }
+
+  if (trend < -TRENDING_BUFFER) {
+    return <Arrow className="trending-down" dir="down" />;
+  }
+
+  return null;
+};
 
 const SortableHeader = ({
   children,
@@ -170,7 +189,6 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
                   const bestRecentAvg = min(map(arr, `recentHoleAvgs.${hole}`));
                   const holeAvg = holeAvgs[hole];
                   const recentHoleAvg = recentHoleAvgs[hole];
-                  const trend = recentHoleAvg - holeAvg;
 
                   return (
                     <td
@@ -178,19 +196,21 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
                         'best-score': recentHoleAvg === bestRecentAvg,
                       })}
                       key={`avgHoleScore-${name}-${hole}`}>
-                      <span
-                        title={`Recent: ${recentHoleAvg}, All-time: ${holeAvg}`}
-                        // eslint-disable-next-line max-len
-                        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
-                        tabIndex={0}>
-                        {recentHoleAvg}
-                      </span>
-                      {trend > TRENDING_BUFFER && (
-                      <span className="trending-up">&nbsp;&#9650;</span>
-                      )}
-                      {trend < -TRENDING_BUFFER && (
-                      <span className="trending-down">&nbsp;&#9660;</span>
-                      )}
+                      <OverlayTrigger
+                        overlay={
+                          <Tooltip>
+                            Recent: {recentHoleAvg}
+                            <br />
+                            All-time: {holeAvg}
+                          </Tooltip>
+                        }
+                        placement="top">
+                        <span>
+                          {recentHoleAvg}
+                          {' '}
+                          <TrendArrow trend={recentHoleAvg - holeAvg} />
+                        </span>
+                      </OverlayTrigger>
                     </td>
                   );
                 })}
