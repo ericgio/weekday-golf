@@ -19,7 +19,6 @@
     "classnames": "^2.2.6",
     "googleapis": "^61.0.0",
     "lodash": "^4.17.20",
-    "moment-timezone": "^0.5.27",
     "next": "^9.5.4",
     "node-sass": "^4.13.1",
     "react": "^16.12.0",

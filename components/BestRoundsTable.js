@@ -1,6 +1,5 @@
 import React from 'react';
 import { round as roundTo, find } from 'lodash';
-import moment from 'moment-timezone';
 
 import Table from './Table';
 import { getPlayerInfo } from '../data/utils';
@@ -15,6 +14,7 @@ import { PAR } from '../constants';
  * @param {{ rounds: Round[], topRounds: PlayerRoundSummary[] }} props
  */
 export default function BestRoundsTable({ rounds, topRounds }) {
+  const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
   let place = 1;
 
   return (
@@ -31,7 +31,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
       </thead>
       <tbody>
         {topRounds.map(({ round, player, total }, idx) => {
-          const { date, timezone } = find(rounds, { id: round });
+          const { date } = find(rounds, { id: round });
           const { name } = getPlayerInfo(player);
 
           if (idx > 0 && total !== topRounds[idx - 1].total) {
@@ -43,7 +43,9 @@ export default function BestRoundsTable({ rounds, topRounds }) {
               <td>{place}</td>
               <td className="player-name">{name}</td>
               <td>{total} (+{roundTo(total - PAR, 1)})</td>
-              <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
+              <td>
+                {new Date(date).toLocaleDateString(undefined, dateOptions)}
+              </td>
             </tr>
           );
         })}

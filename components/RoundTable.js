@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { filter, find, sumBy } from 'lodash';
-import moment from 'moment-timezone';
 import Link from 'next/link';
 
 import Table from './Table';
@@ -16,11 +15,17 @@ import './RoundTable.scss';
  * @param {{ round: Round, scores: Score[] }} props
  */
 export default function RoundTable({ round, scores }) {
-  const { id, date, players, timezone } = round;
+  const dateOptions = {
+    weekday: 'long',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  };
+  const { id, date, players } = round;
 
   return (
     <Fragment>
-      <h3>{moment.tz(date, timezone).format('ddd MMMM Do, YYYY')}</h3>
+      <h3>{new Date(date).toLocaleDateString(undefined, dateOptions)}</h3>
       <Table className="round-table">
         <thead>
           <tr>

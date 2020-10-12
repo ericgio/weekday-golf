@@ -1,12 +1,11 @@
 import { google } from 'googleapis';
-import moment from 'moment-timezone';
 
 import { getPlayerInfo } from './utils';
 
 const { GOOGLE_SHEETS_API_KEY, SPREADSHEET_ID } = process.env;
 
 const CELL_RANGE = 'A3:J';
-const TITLE_RANGE_REGEX = new RegExp(`'(.*)'!${CELL_RANGE}`, 'i');
+const RANGE_DATE_REGEX = new RegExp(`'(.*)T.*'!${CELL_RANGE}`, 'i');
 
 // Initialize Sheets API.
 const SheetsAPI = google.sheets({
@@ -24,7 +23,6 @@ const options = {
  *   id: string,
  *   date: string,
  *   location:string,
- *   timezone: string,
  *   players: string[]
  * }} Round
  */
@@ -57,8 +55,8 @@ export default async function getAllData() {
   const rounds = [];
   const scores = [];
   data.valueRanges.forEach(({ range, values }) => {
-    const [, title] = TITLE_RANGE_REGEX.exec(range);
-    const roundId = title;
+    const [, date] = RANGE_DATE_REGEX.exec(range);
+    const roundId = date;
     const roundPlayers = [];
 
     values.forEach((row) => {
@@ -78,11 +76,9 @@ export default async function getAllData() {
 
     rounds.push({
       id: roundId,
-      date: moment(title).format(),
+      date,
       players: roundPlayers,
-      // TODO: Account for other locations.
       location: 'Mariner\'s Point',
-      timezone: 'America/Los_Angeles',
     });
   });
 
