@@ -8,6 +8,7 @@ import BestRoundsTable from '../../components/BestRoundsTable';
 
 import { PLAYERS } from '../../constants';
 import RoundTable from '../../components/RoundTable';
+import ProfileImage from '../../components/ProfileImage';
 
 const TOP_ROUNDS = 5;
 
@@ -17,11 +18,14 @@ export default function PlayerPage({
   roundsWithPlayer,
   scoresWithPlayer,
 }) {
-  const { name } = playerInfo;
+  const { name, fbId } = playerInfo;
 
   return (
     <Layout title={name}>
-      <h1>{name}</h1>
+      <h1>
+        <ProfileImage fbId={fbId} roundedCircle />
+        {name}
+      </h1>
       <h3>Best Rounds</h3>
       <BestRoundsTable topRounds={topRounds} rounds={roundsWithPlayer} />
 
