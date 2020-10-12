@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import Link from 'next/link';
 
 import Table from './Table';
+import ProfileImage from './ProfileImage';
 import { getPlayerInfo } from '../data/utils';
 import { HOLES, PAR } from '../constants';
 
@@ -41,14 +42,20 @@ export default function RoundTable({ round, scores }) {
           {players.map((player) => {
             const playerRoundScores = filter(scores, { round: id, player });
             const roundTotal = sumBy(playerRoundScores, 'score');
-            const { name, id: playerId } = getPlayerInfo(player);
+            const { id: playerId, name, fbId } = getPlayerInfo(player);
 
             return (
               <tr key={player}>
                 <td className="player-name">
                   <Link href={`/player/${playerId}`}>
+                    <ProfileImage fbId={fbId} height="26" roundedCircle />
+                  </Link>
+                  &nbsp;
+                  <Link href={`/player/${playerId}`}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a>{name}</a>
+                    <a>
+                      {name}
+                    </a>
                   </Link>
                 </td>
                 {HOLES.map((hole) => (
