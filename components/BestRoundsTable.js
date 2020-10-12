@@ -33,7 +33,10 @@ export default function BestRoundsTable({ rounds, topRounds }) {
         {topRounds.map(({ round, player, total }, idx) => {
           const { date, timezone } = find(rounds, { id: round });
           const { name } = getPlayerInfo(player);
-          if (idx > 0 && total !== topRounds[idx - 1].total) place = idx + 1;
+
+          if (idx > 0 && total !== topRounds[idx - 1].total) {
+            place = idx + 1;
+          }
 
           return (
             <tr key={`${name}-${date}`}>
