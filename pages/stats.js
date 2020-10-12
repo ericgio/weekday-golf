@@ -1,10 +1,8 @@
 import cx from 'classnames';
-import moment from 'moment-timezone';
 import React, { useCallback, useState } from 'react';
 import {
   orderBy,
   filter,
-  find,
   mean,
   values,
   sortBy,
@@ -16,6 +14,7 @@ import {
 
 import Layout from '../components/Layout';
 import Table from '../components/Table';
+import BestRoundsTable from '../components/BestRoundsTable';
 import getAllData from '../data/getAllData';
 
 import { HOLES, PAR, PLAYERS } from '../constants';
@@ -25,7 +24,6 @@ import {
   getRoundsPlayed,
   getRoundsPlayedPercentage,
   getTopRounds,
-  getPlayerInfo,
   getHoleAvgs,
   getRecentPlayerRounds,
 } from '../data/utils';
@@ -66,44 +64,6 @@ const SortableHeader = ({
       onClick={() => onClick(sortKey)}>
       {children} {arrow}
     </th>
-  );
-};
-
-/**
- * @param {{ rounds: Round[], topRounds: PlayerRoundSummary[] }} props
- */
-const BestRoundsTable = ({ rounds, topRounds }) => {
-  let place = 1;
-
-  return (
-    <Table className="round-table">
-      <thead>
-        <tr>
-          <th className="player-place">Place</th>
-          <th className="player-name">
-              Name
-          </th>
-          <th>Score</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        {topRounds.map(({ round, player, total }, idx) => {
-          const { date, timezone } = find(rounds, { id: round });
-          const { name } = getPlayerInfo(player);
-          if (idx > 0 && total !== topRounds[idx - 1].total) place = idx + 1;
-
-          return (
-            <tr key={`${name}-${date}`}>
-              <td>{place}</td>
-              <td className="player-name">{name}</td>
-              <td>{total} (+{roundTo(total - PAR, 1)})</td>
-              <td>{moment.tz(date, timezone).format('MMMM Do, YYYY')}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </Table>
   );
 };
 

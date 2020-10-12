@@ -30,7 +30,7 @@ export const PLAYERS = [
   {
     id: 'ola',
     spreadsheetKey: 'ola',
-    name: 'Ola okelola',
+    name: 'Ola Okelola',
   },
   {
     id: 'tomo',
