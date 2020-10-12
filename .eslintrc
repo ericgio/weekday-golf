@@ -9,6 +9,7 @@
   ],
   "parser": "babel-eslint",
   "rules": {
+    "curly": ["error", "all"],
     "consistent-return": "off",
     "no-alert": "off",
     "no-param-reassign": "off",

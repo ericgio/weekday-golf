@@ -20,7 +20,9 @@ export function getPlayerInfo(search) {
     search.includes(spreadsheetKey) || id === search
   ));
 
-  if (!player) throw Error(`Who let ${search} play?`);
+  if (!player) {
+    throw Error(`Who let ${search} play?`);
+  }
 
   return player;
 }
