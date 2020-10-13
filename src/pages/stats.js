@@ -242,15 +242,15 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
  * @typedef {{
  *   rounds: Round[],
  *   topRounds: PlayerRoundSummary[],
- *   globalHoleAvgs: Object<number, number>,
+ *   globalHoleAvgs: Object<string, number>,
  *   playerStats: {
  *     id: string,
  *     name: string,
  *     roundAvg: number,
  *     roundsPlayed: number,
  *     roundsPlayedPercentage: number,
- *     holeAvgs: Object<number, number>,
- *     recentHoleAvgs: Object<number, number>,
+ *     holeAvgs: Object<string, number>,
+ *     recentHoleAvgs: Object<string, number>,
  *   },
  * }} props
  *

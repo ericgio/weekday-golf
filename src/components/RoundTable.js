@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react';
-import { filter, find, sumBy } from 'lodash';
+import { filter, find, sumBy, zipObject } from 'lodash';
 import Link from 'next/link';
 
 import Table from './Table';
 import ProfileImage from './ProfileImage';
-import { getPlayerInfo } from '../data/utils';
-import { HOLES, PAR } from '../constants';
+import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
 import './RoundTable.scss';
 
@@ -22,7 +21,12 @@ export default function RoundTable({ round, scores }) {
     day: 'numeric',
     year: 'numeric',
   };
-  const { id, date, players } = round;
+  const { id, date, holes, parTotal, players, skinsPlayers } = round;
+  const roundScores = filter(scores, { round: id });
+  const skinsRoundsScores = filter(
+    roundScores,
+    (score) => skinsPlayers.includes(score.player)
+  );
 
   return (
     <Fragment>
@@ -33,7 +37,7 @@ export default function RoundTable({ round, scores }) {
             <th className="player-name">
               Name
             </th>
-            {HOLES.map((hole) => (
+            {holes.map((hole) => (
               <th key={`hole-${hole}`}>
                 {hole}
               </th>
@@ -45,9 +49,15 @@ export default function RoundTable({ round, scores }) {
         </thead>
         <tbody>
           {players.map((player) => {
-            const playerRoundScores = filter(scores, { round: id, player });
-            const roundTotal = sumBy(playerRoundScores, 'score');
             const { id: playerId, name, fbId } = getPlayerInfo(player);
+            const playerRoundScores = filter(roundScores, { player });
+            const roundTotal = sumBy(playerRoundScores, 'score');
+            const holeSkinCounts = zipObject(
+              holes,
+              holes.map(
+                (hole) => skinCountForHole(skinsRoundsScores, player, hole)
+              ),
+            );
 
             return (
               <tr key={player}>
@@ -63,14 +73,15 @@ export default function RoundTable({ round, scores }) {
                     </a>
                   </Link>
                 </td>
-                {HOLES.map((hole) => (
+                {holes.map((hole) => (
                   <td key={`${date}-${player}-${hole}`}>
                     {find(playerRoundScores, { hole }).score}
+                    {Array(holeSkinCounts[hole]).fill('·').join('')}
                   </td>
                 ))}
                 <td className="total">
                   {roundTotal}
-                  <span className="to-par">+{roundTotal - PAR}</span>
+                  <span className="to-par">+{roundTotal - parTotal}</span>
                 </td>
               </tr>
             );

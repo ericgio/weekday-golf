@@ -9,6 +9,7 @@ import {
   last,
   isEmpty,
   zipObject,
+  map,
 } from 'lodash';
 
 import { PLAYERS, HOLES } from '../constants';
@@ -138,11 +139,54 @@ export function getHoleAvg(scores, hole) {
 
 /**
  * @param {Score[]} scores
- * @returns {Object<number, number>}
+ * @returns {Object<string, number>}
  */
 export function getHoleAvgs(scores) {
   return zipObject(
     HOLES,
     HOLES.map((hole) => getHoleAvg(scores, hole)),
   );
+}
+
+/**
+ * @param {Score[]} scores Scores for a specific hole in a round
+ * @returns {undefined|string} id of player who won skin, or undefined if push
+ */
+function getSkinWinner(scores) {
+  const minScore = Math.min(...map(scores, 'score'));
+  const scoresOfMin = filter(scores, { score: minScore });
+
+  if (scoresOfMin.length !== 1) {
+    return undefined;
+  }
+
+  return first(scoresOfMin).player;
+}
+
+/**
+ * @param {Score[]} scores All round scores for a people playing skins
+ * @param {string} player id of a player to see how many skins they won
+ * @param {number} hole The hole in question
+ * @returns {number} The number of skins won by this player on this hole
+ */
+export function skinCountForHole(scores, player, hole) {
+  const skinWinner = getSkinWinner(filter(scores, { hole }));
+  if (!skinWinner || skinWinner !== player) {
+    return 0;
+  }
+
+  // Great, this player won the current hole. Look back to see if there were
+  // pushes leading up to this.
+  let skinsWon = 1;
+  let holeInQuestion = hole - 1;
+  while (holeInQuestion > 0) {
+    const earlierHoleScores = filter(scores, { hole: holeInQuestion });
+    if (getSkinWinner(earlierHoleScores) !== undefined) {
+      break;
+    }
+    skinsWon += 1;
+    holeInQuestion -= 1;
+  }
+
+  return skinsWon;
 }
