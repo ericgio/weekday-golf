@@ -1,11 +1,11 @@
-.app-nav {
+.appNav {
   background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   margin-bottom: 20px;
 }
 
 @media (min-width: 576px) {
-  .app-nav .container {
+  .appNav :global(.container) {
     padding: 0 15px;
   }
 }

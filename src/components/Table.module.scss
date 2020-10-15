@@ -1,0 +1,32 @@
+$border-color: rgba(0, 0, 0, 0.1);
+$border-style: 1px solid $border-color;
+
+.appTable {
+  margin-bottom: 30px;
+  white-space: nowrap;
+
+  td, th {
+    border-color: $border-color;
+    text-align: center,
+  }
+
+  .verticalHeader {
+    border-right: $border-style;
+    text-align: left;
+    width: 33%;
+  }
+
+  .verticalFooter {
+    border-left: $border-style;
+  }
+}
+
+@media (max-width: 767px) {
+  .appTable {
+    font-size: 13px;
+
+    td, th {
+      padding: 4px;
+    }
+  }
+}

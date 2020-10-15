@@ -2,12 +2,12 @@ import cx from 'classnames';
 import React from 'react';
 import { Table as RBTable } from 'react-bootstrap';
 
-import './Table.scss';
+import styles from './Table.module.scss';
 
 const Table = ({ className, ...props }) => (
   <RBTable
     {...props}
-    className={cx('app-table', className)}
+    className={cx(styles.appTable, className)}
   />
 );
 

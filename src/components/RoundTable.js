@@ -6,7 +6,7 @@ import Table from './Table';
 import ProfileImage from './ProfileImage';
 import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
-import './RoundTable.scss';
+import tableStyles from './Table.module.scss';
 
 /**
  * @typedef {import('../data/getAllData').Round} Round
@@ -31,10 +31,10 @@ export default function RoundTable({ round, scores }) {
   return (
     <Fragment>
       <h3>{new Date(date).toLocaleDateString(undefined, dateOptions)}</h3>
-      <Table className="round-table">
+      <Table>
         <thead>
           <tr>
-            <th className="player-name">
+            <th className={tableStyles.verticalHeader}>
               Name
             </th>
             {holes.map((hole) => (
@@ -42,7 +42,7 @@ export default function RoundTable({ round, scores }) {
                 {hole}
               </th>
             ))}
-            <th className="total">
+            <th className={tableStyles.verticalFooter}>
               Total
             </th>
           </tr>
@@ -61,14 +61,17 @@ export default function RoundTable({ round, scores }) {
 
             return (
               <tr key={player}>
-                <td className="player-name">
+                <td className={tableStyles.verticalHeader}>
                   <Link href={`/player/${playerId}`}>
-                    <ProfileImage fbId={fbId} height="26" roundedCircle />
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                    <a>
+                      <ProfileImage fbId={fbId} height="26" roundedCircle />
+                    </a>
                   </Link>
                   &nbsp;
                   <Link href={`/player/${playerId}`}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a>
+                    <a className="text-dark">
                       {name}
                     </a>
                   </Link>
@@ -79,9 +82,9 @@ export default function RoundTable({ round, scores }) {
                     {Array(holeSkinCounts[hole]).fill('·').join('')}
                   </td>
                 ))}
-                <td className="total">
+                <td className={tableStyles.verticalFooter}>
                   {roundTotal}
-                  <span className="to-par">+{roundTotal - parTotal}</span>
+                  <span className="ml-2">+{roundTotal - parTotal}</span>
                 </td>
               </tr>
             );
