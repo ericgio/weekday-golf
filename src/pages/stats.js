@@ -29,7 +29,8 @@ import {
   getRecentPlayerRounds,
 } from '../data/utils';
 
-import './styles/Stats.scss';
+import styles from './stats.module.scss';
+import tableStyles from '../components/Table.module.scss';
 
 /**
  * @typedef {import('../data/getAllData').Round} Round
@@ -44,7 +45,7 @@ const RECENT_ROUND_COUNT = 8;
 const Arrow = ({ className, dir, ...props }) => (
   <span
     {...props}
-    className={cx('arrow', className)}>
+    className={cx(styles.arrow, className)}>
     {dir === 'up' ? '▲' : '▼'}
   </span>
 );
@@ -55,11 +56,11 @@ const SortArrow = ({ order }) => (
 
 const TrendArrow = ({ trend }) => {
   if (trend > TRENDING_BUFFER) {
-    return <Arrow className="trending-up" dir="up" />;
+    return <Arrow className={styles.trendingUp} dir="up" />;
   }
 
   if (trend < -TRENDING_BUFFER) {
-    return <Arrow className="trending-down" dir="down" />;
+    return <Arrow className={styles.trendingDown} dir="down" />;
   }
 
   return null;
@@ -79,7 +80,7 @@ const SortableHeader = ({
 
   return (
     <th
-      className={cx('sortable', className)}
+      className={cx(styles.sortable, className)}
       onClick={() => onClick(sortKey)}>
       {children} {arrow}
     </th>
@@ -107,11 +108,11 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
   return (
     <Layout title="Stats">
       <h3>Stats By Player</h3>
-      <Table className="round-table">
+      <Table>
         <thead>
           <tr>
             <SortableHeader
-              className="player-name"
+              className={tableStyles.verticalHeader}
               onClick={handleHeaderClick}
               order={order}
               selectedSortKey={selectedSortKey}
@@ -151,7 +152,7 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
 
             return (
               <tr key={name}>
-                <td className="player-name">
+                <td className={tableStyles.verticalHeader}>
                   {name}
                 </td>
                 <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
@@ -165,13 +166,13 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
       </Table>
 
       <h3>Average Score By Hole</h3>
-      <div className="avg-score-explanation">
+      <div className={styles.avgScoreExplanation}>
         Most recent {RECENT_ROUND_COUNT} rounds, minimum {MIN_ROUNDS} rounds
       </div>
-      <Table className="round-table">
+      <Table>
         <thead>
           <tr>
-            <th className="player-name">
+            <th className={tableStyles.verticalHeader}>
               Name
             </th>
             {HOLES.map((hole) => <th key={hole}>{hole}</th>)}
@@ -182,7 +183,7 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
             .filter((stat) => stat.roundsPlayed >= MIN_ROUNDS)
             .map(({ name, holeAvgs, recentHoleAvgs, roundsPlayed }, i, arr) => (
               <tr key={name}>
-                <td className="player-name">
+                <td className={tableStyles.verticalHeader}>
                   {name}
                 </td>
                 {HOLES.map((hole) => {
@@ -193,7 +194,7 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
                   return (
                     <td
                       className={cx({
-                        'best-score': recentHoleAvg === bestRecentAvg,
+                        [styles.bestScore]: recentHoleAvg === bestRecentAvg,
                       })}
                       key={`avgHoleScore-${name}-${hole}`}>
                       <OverlayTrigger
@@ -219,7 +220,7 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
         </tbody>
         <thead>
           <tr>
-            <th className="player-name">
+            <th className={tableStyles.verticalHeader}>
               Overall
             </th>
             {HOLES.map((hole) => (

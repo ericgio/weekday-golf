@@ -5,6 +5,8 @@ import Table from './Table';
 import { getPlayerInfo } from '../data/utils';
 import { PAR } from '../constants';
 
+import tableStyles from './Table.module.scss';
+
 /**
  * @typedef {import('../data/getAllData').Round} Round
  * @typedef {import('../data/utils').PlayerRoundSummary} PlayerRoundSummary
@@ -18,11 +20,11 @@ export default function BestRoundsTable({ rounds, topRounds }) {
   let place = 1;
 
   return (
-    <Table className="round-table">
+    <Table>
       <thead>
         <tr>
-          <th className="player-place">Place</th>
-          <th className="player-name">
+          <th className="text-left">Place</th>
+          <th className={tableStyles.verticalHeader}>
             Name
           </th>
           <th>Score</th>
@@ -41,7 +43,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
           return (
             <tr key={`${name}-${date}`}>
               <td>{place}</td>
-              <td className="player-name">{name}</td>
+              <td className={tableStyles.verticalHeader}>{name}</td>
               <td>{total} (+{roundTo(total - PAR, 1)})</td>
               <td>
                 {new Date(date).toLocaleDateString(undefined, dateOptions)}
