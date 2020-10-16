@@ -78,14 +78,13 @@ export default function RoundTable({ round, scores }) {
                 <td className={tableStyles.verticalHeader}>
                   <Link href={`/player/${playerId}`}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a>
-                      <ProfileImage fbId={fbId} height="26" roundedCircle />
-                    </a>
-                  </Link>
-                  &nbsp;
-                  <Link href={`/player/${playerId}`}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a className="text-dark">
+                      <ProfileImage
+                        className="mr-1"
+                        fbId={fbId}
+                        height="26"
+                        roundedCircle
+                      />
                       {name}
                     </a>
                   </Link>
