@@ -50,7 +50,7 @@ export function getAvg(numerator, denominator, precision = 1) {
  * @param {Score[]} scores
  * @returns {PlayerRoundSummary[]}
  */
-function getPlayerRoundSummaries(scores) {
+export function getPlayerRoundSummaries(scores) {
   const groupedScores = groupBy(
     scores,
     ({ player, round }) => `${player}-${round}`

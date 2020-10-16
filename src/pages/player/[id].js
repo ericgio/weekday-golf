@@ -1,22 +1,25 @@
 import { filter, find, some } from 'lodash';
 import React from 'react';
 
-import getAllData from '../../data/getAllData';
-import { getTopRounds } from '../../data/utils';
-import Layout from '../../components/Layout';
 import BestRoundsTable from '../../components/BestRoundsTable';
+import Layout from '../../components/Layout';
+import ProfileImage from '../../components/ProfileImage';
+import RoundsChart from '../../components/Chart/RoundsChart';
+import RoundTable from '../../components/RoundTable';
+
+import getAllData from '../../data/getAllData';
+import { getPlayerRoundSummaries, getTopRounds } from '../../data/utils';
 
 import { PLAYERS } from '../../constants';
-import RoundTable from '../../components/RoundTable';
-import ProfileImage from '../../components/ProfileImage';
 
 const TOP_ROUNDS = 5;
 
 export default function PlayerPage({
   playerInfo,
-  topRounds,
+  roundsSummary,
   roundsWithPlayer,
   scoresWithPlayer,
+  topRounds,
 }) {
   const { name, fbId } = playerInfo;
 
@@ -28,7 +31,7 @@ export default function PlayerPage({
       </h1>
       <h3>Best Rounds</h3>
       <BestRoundsTable topRounds={topRounds} rounds={roundsWithPlayer} />
-
+      <RoundsChart data={roundsSummary} />
       {roundsWithPlayer.map((round) => (
         <RoundTable key={round.id} round={round} scores={scoresWithPlayer} />
       ))}
@@ -53,9 +56,10 @@ export async function getStaticProps({ params: { id } }) {
   return {
     props: {
       playerInfo,
-      topRounds,
+      roundsSummary: getPlayerRoundSummaries(playerScores),
       roundsWithPlayer,
       scoresWithPlayer,
+      topRounds,
     },
     revalidate: 30,
   };
