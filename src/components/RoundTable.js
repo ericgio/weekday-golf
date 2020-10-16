@@ -1,9 +1,11 @@
-import React, { Fragment } from 'react';
+import cx from 'classnames';
 import { filter, find, sumBy, zipObject } from 'lodash';
 import Link from 'next/link';
+import React, { Fragment } from 'react';
 
-import Table from './Table';
 import ProfileImage from './ProfileImage';
+import Table from './Table';
+
 import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
 import tableStyles from './Table.module.scss';
@@ -76,12 +78,19 @@ export default function RoundTable({ round, scores }) {
                     </a>
                   </Link>
                 </td>
-                {holes.map((hole) => (
-                  <td key={`${date}-${player}-${hole}`}>
-                    {find(playerRoundScores, { hole }).score}
-                    {Array(holeSkinCounts[hole]).fill('·').join('')}
-                  </td>
-                ))}
+                {holes.map((hole) => {
+                  const skinCount = holeSkinCounts[hole];
+                  return (
+                    <td
+                      className={cx({
+                        [tableStyles.bestScore]: holeSkinCounts[hole],
+                      })}
+                      key={`${date}-${player}-${hole}`}>
+                      {find(playerRoundScores, { hole }).score}
+                      {skinCount > 1 && <sup>{skinCount}</sup>}
+                    </td>
+                  );
+                })}
                 <td className={tableStyles.verticalFooter}>
                   {roundTotal}
                   <span className="ml-2">+{roundTotal - parTotal}</span>
