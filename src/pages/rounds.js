@@ -2,9 +2,11 @@ import React from 'react';
 import { orderBy } from 'lodash';
 
 import Layout from '../components/Layout';
-import getAllData from '../data/getAllData';
-
+import RoundsChart from '../components/Chart/RoundsChart';
 import RoundTable from '../components/RoundTable';
+
+import getAllData from '../data/getAllData';
+import { getPlayerRoundSummaries } from '../data/utils';
 
 /**
  * @typedef {import('../data/getAllData').Round} Round
@@ -14,6 +16,7 @@ import RoundTable from '../components/RoundTable';
  */
 const RoundsPage = ({ rounds, scores }) => (
   <Layout title="Rounds">
+    <RoundsChart data={getPlayerRoundSummaries(scores)} />
     {rounds.map((round) => (
       <RoundTable key={round.id} round={round} scores={scores} />
     ))}

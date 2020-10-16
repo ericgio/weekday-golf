@@ -1,0 +1,35 @@
+.container {
+  margin-bottom: 30px;
+}
+
+.axis {
+  path, line {
+    fill: none;
+    stroke: #dee2e6; // Match table border style
+    shape-rendering: crispEdges;
+  }
+
+  .domain {
+    stroke: none;
+  }
+}
+
+.xAxis {
+  text {
+    text-anchor: start;
+    transform: translate(3px, -10px);
+  }
+}
+
+.yAxis {
+  text {
+    text-anchor: start;
+    transform: translate(10px, -8px);
+  }
+
+  &-background {
+    text {
+      display: none;
+    }
+  }
+}

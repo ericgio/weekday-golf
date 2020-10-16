@@ -13,9 +13,10 @@ import {
 import React, { useCallback, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+import BestRoundsTable from '../components/BestRoundsTable';
 import Layout from '../components/Layout';
 import Table from '../components/Table';
-import BestRoundsTable from '../components/BestRoundsTable';
+
 import getAllData from '../data/getAllData';
 
 import { HOLES, PAR, PLAYERS } from '../constants';
