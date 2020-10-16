@@ -190,11 +190,12 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
                   const bestRecentAvg = min(map(arr, `recentHoleAvgs.${hole}`));
                   const holeAvg = holeAvgs[hole];
                   const recentHoleAvg = recentHoleAvgs[hole];
+                  const bestScore = recentHoleAvg === bestRecentAvg;
 
                   return (
                     <td
                       className={cx({
-                        [styles.bestScore]: recentHoleAvg === bestRecentAvg,
+                        [tableStyles.bestScore]: bestScore,
                       })}
                       key={`avgHoleScore-${name}-${hole}`}>
                       <OverlayTrigger
