@@ -10,6 +10,18 @@ import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
 import tableStyles from './Table.module.scss';
 
+const Skindicator = ({ count }) => {
+  if (count < 2) {
+    return null;
+  }
+
+  return (
+    <sup className={tableStyles.skin}>
+      {count}
+    </sup>
+  );
+};
+
 /**
  * @typedef {import('../data/getAllData').Round} Round
  * @typedef {import('../data/getAllData').Score} Score
@@ -78,19 +90,16 @@ export default function RoundTable({ round, scores }) {
                     </a>
                   </Link>
                 </td>
-                {holes.map((hole) => {
-                  const skinCount = holeSkinCounts[hole];
-                  return (
-                    <td
-                      className={cx({
-                        [tableStyles.bestScore]: holeSkinCounts[hole],
-                      })}
-                      key={`${date}-${player}-${hole}`}>
-                      {find(playerRoundScores, { hole }).score}
-                      {skinCount > 1 && <sup>{skinCount}</sup>}
-                    </td>
-                  );
-                })}
+                {holes.map((hole) => (
+                  <td
+                    className={cx({
+                      [tableStyles.bestScore]: holeSkinCounts[hole],
+                    })}
+                    key={`${date}-${player}-${hole}`}>
+                    {find(playerRoundScores, { hole }).score}
+                    <Skindicator count={holeSkinCounts[hole]} />
+                  </td>
+                ))}
                 <td className={tableStyles.verticalFooter}>
                   {roundTotal}
                   <span className="ml-2">+{roundTotal - parTotal}</span>
