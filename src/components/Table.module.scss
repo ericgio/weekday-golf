@@ -10,6 +10,16 @@ $border-style: 1px solid $border-color;
     text-align: center,
   }
 
+  sup {
+    font-size: 65%;
+    margin-left: 1px;
+    top: -0.65em;
+  }
+
+  .bestScore {
+    background-color: #ffffbb;
+  }
+
   .verticalHeader {
     border-right: $border-style;
     text-align: left;
