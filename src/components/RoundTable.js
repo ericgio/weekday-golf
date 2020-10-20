@@ -2,6 +2,7 @@ import cx from 'classnames';
 import { filter, find, sumBy, zipObject } from 'lodash';
 import Link from 'next/link';
 import React, { Fragment } from 'react';
+import { parseISO, format } from 'date-fns';
 
 import ProfileImage from './ProfileImage';
 import Table from './Table';
@@ -29,12 +30,6 @@ const Skindicator = ({ count }) => {
  * @param {{ round: Round, scores: Score[] }} props
  */
 export default function RoundTable({ round, scores }) {
-  const dateOptions = {
-    weekday: 'long',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  };
   const { id, date, holes, parTotal, players, skinsPlayers } = round;
   const roundScores = filter(scores, { round: id });
   const skinsRoundsScores = filter(
@@ -44,7 +39,7 @@ export default function RoundTable({ round, scores }) {
 
   return (
     <Fragment>
-      <h3>{new Date(date).toLocaleDateString(undefined, dateOptions)}</h3>
+      <h3>{format(parseISO(date), 'EEEE MMM do, y')}</h3>
       <Table>
         <thead>
           <tr>

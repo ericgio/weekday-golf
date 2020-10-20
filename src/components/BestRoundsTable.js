@@ -1,5 +1,6 @@
 import React from 'react';
 import { round as roundTo, find } from 'lodash';
+import { parseISO, format } from 'date-fns';
 
 import Table from './Table';
 import { getPlayerInfo } from '../data/utils';
@@ -16,7 +17,6 @@ import tableStyles from './Table.module.scss';
  * @param {{ rounds: Round[], topRounds: PlayerRoundSummary[] }} props
  */
 export default function BestRoundsTable({ rounds, topRounds }) {
-  const dateOptions = { month: 'long', day: 'numeric', year: 'numeric' };
   let place = 1;
 
   return (
@@ -46,7 +46,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
               <td className={tableStyles.verticalHeader}>{name}</td>
               <td>{total} (+{roundTo(total - PAR, 1)})</td>
               <td>
-                {new Date(date).toLocaleDateString(undefined, dateOptions)}
+                {format(parseISO(date), 'MMMM do, y')}
               </td>
             </tr>
           );
