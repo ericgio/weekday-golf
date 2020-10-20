@@ -3,6 +3,7 @@ import * as d3 from 'd3';
 import { groupBy } from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { parseISO, format } from 'date-fns';
 
 import Axis from './Axis';
 import Line from './Line';
@@ -118,11 +119,9 @@ const RoundsChart = ({ data }) => {
                 y={(d) => yScale(d.total)}
               />
               {players[id].map(({ round, total }) => {
-                const date = (new Date(round)).toLocaleDateString(undefined, {
-                  day: 'numeric',
-                  month: 'short',
-                  year: 'numeric',
-                });
+                // TODO: don't use round id as a date. Pull the round object
+                // and use its `date` field instead.
+                const date = format(parseISO(round), 'MMM do, y');
 
                 // Don't display the player's name on their profile page.
                 const name = Object.keys(players).length > 1 ?

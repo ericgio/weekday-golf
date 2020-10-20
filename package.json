@@ -17,6 +17,7 @@
   "dependencies": {
     "classnames": "^2.2.6",
     "d3": "^6.2.0",
+    "date-fns": "2.16.1",
     "googleapis": "^61.0.0",
     "lodash": "^4.17.20",
     "next": "^9.5.4",
