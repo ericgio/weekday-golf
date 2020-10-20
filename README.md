@@ -20,7 +20,7 @@ Add the env vars to the `.env` file.
 
 ### Run the App
 ```sh
-$ yarn run dev
+$ yarn dev
 ```
 This script will build the static data, bundle the app, and start a local server. The location defaults to `localhost:3000` but you can change this by changing the `$PORT` variable to something else.
 
