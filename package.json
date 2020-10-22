@@ -5,6 +5,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -p $PORT",
+    "analyze": "ANALYZE=true next build",
     "check": "npm run lint",
     "lint": "eslint . --report-unused-disable-directives",
     "lint:fix": "eslint . --fix",
@@ -15,6 +16,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "@next/bundle-analyzer": "9.5.5",
     "classnames": "^2.2.6",
     "d3": "^6.2.0",
     "date-fns": "2.16.1",
