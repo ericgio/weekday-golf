@@ -1,5 +1,5 @@
 import React from 'react';
-import { orderBy } from 'lodash';
+import orderBy from 'lodash/orderBy';
 
 import Layout from '../components/Layout';
 import RoundsChart from '../components/Chart/RoundsChart';

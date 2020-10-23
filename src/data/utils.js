@@ -1,16 +1,14 @@
-import {
-  round,
-  groupBy,
-  sumBy,
-  sortBy,
-  orderBy,
-  filter,
-  first,
-  last,
-  isEmpty,
-  zipObject,
-  map,
-} from 'lodash';
+import round from 'lodash/round';
+import groupBy from 'lodash/groupBy';
+import sumBy from 'lodash/sumBy';
+import sortBy from 'lodash/sortBy';
+import orderBy from 'lodash/orderBy';
+import filter from 'lodash/filter';
+import first from 'lodash/first';
+import last from 'lodash/last';
+import isEmpty from 'lodash/isEmpty';
+import zipObject from 'lodash/zipObject';
+import map from 'lodash/map';
 
 import { PLAYERS, HOLES } from '../constants';
 

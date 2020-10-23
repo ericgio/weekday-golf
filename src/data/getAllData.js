@@ -1,5 +1,8 @@
 import { google } from 'googleapis';
-import { first, sum, tail, zipObject } from 'lodash';
+import first from 'lodash/first';
+import sum from 'lodash/sum';
+import tail from 'lodash/tail';
+import zipObject from 'lodash/zipObject';
 
 import { getPlayerInfo } from './utils';
 

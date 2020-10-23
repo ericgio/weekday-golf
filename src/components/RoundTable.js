@@ -1,5 +1,8 @@
 import cx from 'classnames';
-import { filter, find, sumBy, zipObject } from 'lodash';
+import filter from 'lodash/filter';
+import find from 'lodash/find';
+import sumBy from 'lodash/sumBy';
+import zipObject from 'lodash/zipObject';
 import Link from 'next/link';
 import React, { Fragment } from 'react';
 import { parseISO, format } from 'date-fns';

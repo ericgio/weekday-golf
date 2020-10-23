@@ -1,15 +1,12 @@
 import cx from 'classnames';
-import {
-  orderBy,
-  filter,
-  mean,
-  values,
-  sortBy,
-  min,
-  map,
-  round as
-  roundTo,
-} from 'lodash';
+import orderBy from 'lodash/orderBy';
+import filter from 'lodash/filter';
+import mean from 'lodash/mean';
+import values from 'lodash/values';
+import sortBy from 'lodash/sortBy';
+import min from 'lodash/min';
+import map from 'lodash/map';
+import roundTo from 'lodash/round';
 import React, { useCallback, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 

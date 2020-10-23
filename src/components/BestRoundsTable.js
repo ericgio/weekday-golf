@@ -1,5 +1,6 @@
 import React from 'react';
-import { round as roundTo, find } from 'lodash';
+import roundTo from 'lodash/round';
+import find from 'lodash/find';
 import { parseISO, format } from 'date-fns';
 
 import Table from './Table';

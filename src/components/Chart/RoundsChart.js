@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import * as d3 from 'd3';
-import { groupBy } from 'lodash';
+import groupBy from 'lodash/groupBy';
 import React, { useEffect, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { parseISO, format } from 'date-fns';
