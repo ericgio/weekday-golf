@@ -148,15 +148,30 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
             const minHoles = HOLES.filter((hole) => holeAvgs[hole] === min);
             const maxHoles = HOLES.filter((hole) => holeAvgs[hole] === max);
 
+            const dataCells = roundsPlayed === 0 ?
+              (
+                <React.Fragment>
+                  <td>-</td>
+                  <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
+                  <td>-</td>
+                  <td>-</td>
+                </React.Fragment>
+              ) :
+              (
+                <React.Fragment>
+                  <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
+                  <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
+                  <td>{minHoles.join(', ')} ({min})</td>
+                  <td>{maxHoles.join(', ')} ({max})</td>
+                </React.Fragment>
+              );
+
             return (
               <tr key={name}>
                 <td className={tableStyles.verticalHeader}>
                   {name}
                 </td>
-                <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
-                <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
-                <td>{minHoles.join(', ')} ({min})</td>
-                <td>{maxHoles.join(', ')} ({max})</td>
+                {dataCells}
               </tr>
             );
           })}

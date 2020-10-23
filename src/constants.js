@@ -44,4 +44,10 @@ export const PLAYERS = [
     name: 'Tom Occhino',
     fbId: 15704357,
   },
+  {
+    id: 'astonmotes',
+    spreadsheetKey: 'aston',
+    name: 'Aston Motes',
+    fbId: 711017,
+  },
 ];
