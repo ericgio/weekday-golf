@@ -1,4 +1,3 @@
-import cx from 'classnames';
 import filter from 'lodash/filter';
 import find from 'lodash/find';
 import sumBy from 'lodash/sumBy';
@@ -12,7 +11,7 @@ import Table from './Table';
 
 import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
-import tableStyles from './Table.module.scss';
+import styles from './RoundTable.module.scss';
 
 const Skindicator = ({ count }) => {
   if (count < 2) {
@@ -20,7 +19,7 @@ const Skindicator = ({ count }) => {
   }
 
   return (
-    <sup className={tableStyles.skin}>
+    <sup className={styles.skin}>
       {count}
     </sup>
   );
@@ -46,17 +45,17 @@ export default function RoundTable({ round, scores }) {
       <Table>
         <thead>
           <tr>
-            <th className={tableStyles.verticalHeader}>
+            <Table.RowHeader as="th">
               Name
-            </th>
+            </Table.RowHeader>
             {holes.map((hole) => (
               <th key={`hole-${hole}`}>
                 {hole}
               </th>
             ))}
-            <th className={tableStyles.verticalFooter}>
+            <Table.RowFooter as="th">
               Total
-            </th>
+            </Table.RowFooter>
           </tr>
         </thead>
         <tbody>
@@ -73,7 +72,7 @@ export default function RoundTable({ round, scores }) {
 
             return (
               <tr key={player}>
-                <td className={tableStyles.verticalHeader}>
+                <Table.RowHeader>
                   <Link href={`/player/${playerId}`}>
                     {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a className="text-dark">
@@ -86,21 +85,19 @@ export default function RoundTable({ round, scores }) {
                       {name}
                     </a>
                   </Link>
-                </td>
+                </Table.RowHeader>
                 {holes.map((hole) => (
-                  <td
-                    className={cx({
-                      [tableStyles.bestScore]: holeSkinCounts[hole],
-                    })}
+                  <Table.HighlightableCell
+                    highlight={!!holeSkinCounts[hole]}
                     key={`${date}-${player}-${hole}`}>
                     {find(playerRoundScores, { hole }).score}
                     <Skindicator count={holeSkinCounts[hole]} />
-                  </td>
+                  </Table.HighlightableCell>
                 ))}
-                <td className={tableStyles.verticalFooter}>
+                <Table.RowFooter>
                   {roundTotal}
                   <span className="ml-2">+{roundTotal - parTotal}</span>
-                </td>
+                </Table.RowFooter>
               </tr>
             );
           })}

@@ -4,6 +4,27 @@ import { Table as RBTable } from 'react-bootstrap';
 
 import styles from './Table.module.scss';
 
+const RowHeader = ({ as: AsComponent = 'td', className, ...props }) => (
+  <AsComponent
+    {...props}
+    className={cx(styles.rowHeader, className)}
+  />
+);
+
+const RowFooter = ({ as: AsComponent = 'td', className, ...props }) => (
+  <AsComponent
+    {...props}
+    className={cx(styles.rowFooter, className)}
+  />
+);
+
+const HighlightableCell = ({ highlight, className, ...props }) => (
+  <td
+    {...props}
+    className={cx({ [styles.highlightCell]: highlight }, className)}
+  />
+);
+
 const Table = ({ className, ...props }) => (
   <RBTable
     {...props}
@@ -16,4 +37,7 @@ Table.defaultProps = {
   size: 'sm',
 };
 
-export default Table;
+export default Object.assign(
+  Table,
+  { RowHeader, RowFooter, HighlightableCell }
+);

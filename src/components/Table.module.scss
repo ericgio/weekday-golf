@@ -10,23 +10,17 @@ $border-style: 1px solid $border-color;
     text-align: center,
   }
 
-  .skin {
-    font-size: 65%;
-    margin-left: 1px;
-    top: -0.65em;
-  }
-
-  .bestScore {
+  .highlightCell {
     background-color: #ffffbb;
   }
 
-  .verticalHeader {
+  .rowHeader {
     border-right: $border-style;
     text-align: left;
     width: 33%;
   }
 
-  .verticalFooter {
+  .rowFooter {
     border-left: $border-style;
   }
 }
