@@ -42,15 +42,7 @@ const useResizeObserver = (
 
 const translate = (x, y) => `translate(${x}, ${y})`;
 
-const COLORS = [
-  '#23171b',
-  '#3987f9',
-  '#2ee5ae',
-  '#95fb51',
-  '#feb927',
-  '#e54813',
-  '#900c00',
-];
+const COLORS = d3.schemeCategory10;
 const HEIGHT = 360;
 const MARGIN = {
   bottom: 24,
