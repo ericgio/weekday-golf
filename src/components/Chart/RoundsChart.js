@@ -1,14 +1,15 @@
 import cx from 'classnames';
 import * as d3 from 'd3';
+import { parseISO, format } from 'date-fns';
 import groupBy from 'lodash/groupBy';
 import React, { useEffect, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { parseISO, format } from 'date-fns';
 
 import Axis from './Axis';
 import Line from './Line';
 
 import { getPlayerInfo } from '../../data/utils';
+import { PAR } from '../../constants';
 
 import styles from './styles/RoundsChart.module.scss';
 
@@ -129,7 +130,7 @@ const RoundsChart = ({ data }) => {
                       <Tooltip>
                         {date}<br />
                         {name}
-                        {total}
+                        {total} (+{total - PAR})
                       </Tooltip>
                     }
                     placement="top">
