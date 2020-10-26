@@ -20,11 +20,13 @@ import { HOLES, PAR, PLAYERS } from '../constants';
 
 import {
   getAvgRoundScore,
-  getRoundsPlayed,
-  getRoundsPlayedPercentage,
-  getTopRounds,
   getHoleAvgs,
   getRecentPlayerRounds,
+  getRoundsPlayed,
+  getRoundsPlayedPercentage,
+  getRoundsWonByPlayer,
+  getRoundsWonPercentage,
+  getTopRounds,
 } from '../data/utils';
 
 import styles from './stats.module.scss';
@@ -130,6 +132,13 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
               sortKey="roundsPlayed">
               Rounds Played
             </SortableHeader>
+            <SortableHeader
+              onClick={handleHeaderClick}
+              order={order}
+              selectedSortKey={selectedSortKey}
+              sortKey="roundsWon">
+              Rounds Won
+            </SortableHeader>
             <th>Best Hole</th>
             <th>Worst Hole</th>
           </tr>
@@ -140,6 +149,8 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
             roundAvg,
             roundsPlayed,
             roundsPlayedPercentage,
+            roundsWon,
+            roundsWonPercentage,
             holeAvgs,
           }) => {
             const min = Math.min(...Object.values(holeAvgs));
@@ -148,22 +159,20 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
             const maxHoles = HOLES.filter((hole) => holeAvgs[hole] === max);
 
             const dataCells = roundsPlayed === 0 ?
-              (
-                <React.Fragment>
-                  <td>-</td>
-                  <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
-                  <td>-</td>
-                  <td>-</td>
-                </React.Fragment>
-              ) :
-              (
-                <React.Fragment>
-                  <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
-                  <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
-                  <td>{minHoles.join(', ')} ({min})</td>
-                  <td>{maxHoles.join(', ')} ({max})</td>
-                </React.Fragment>
-              );
+              <React.Fragment>
+                <td>-</td>
+                <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
+                <td>-</td>
+                <td>-</td>
+                <td>-</td>
+              </React.Fragment> :
+              <React.Fragment>
+                <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
+                <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
+                <td>{roundsWon} ({roundsWonPercentage}%)</td>
+                <td>{minHoles.join(', ')} ({min})</td>
+                <td>{maxHoles.join(', ')} ({max})</td>
+              </React.Fragment>;
 
             return (
               <tr key={name}>
@@ -273,6 +282,7 @@ export async function getStaticProps() {
 
   const topRounds = getTopRounds(scores, TOP_ROUNDS);
   const globalHoleAvgs = getHoleAvgs(scores);
+  const roundsWonByPlayer = getRoundsWonByPlayer(scores);
 
   const playerStats = PLAYERS.map(({ id, name }) => {
     const playerScores = filter(scores, { player: id });
@@ -280,15 +290,19 @@ export async function getStaticProps() {
     const recentPlayerScores = playerScores.filter(
       (score) => recentRounds.includes(score.round)
     );
+    const roundsWon = roundsWonByPlayer[id] || 0;
+    const roundsPlayed = getRoundsPlayed(rounds, id);
 
     return {
       id,
       name,
-      roundAvg: getAvgRoundScore(playerScores),
-      roundsPlayed: getRoundsPlayed(rounds, id),
-      roundsPlayedPercentage: getRoundsPlayedPercentage(rounds, id),
       holeAvgs: getHoleAvgs(playerScores),
       recentHoleAvgs: getHoleAvgs(recentPlayerScores),
+      roundAvg: getAvgRoundScore(playerScores),
+      roundsPlayed,
+      roundsPlayedPercentage: getRoundsPlayedPercentage(rounds, id),
+      roundsWon,
+      roundsWonPercentage: getRoundsWonPercentage(roundsWon, roundsPlayed),
     };
   });
 
