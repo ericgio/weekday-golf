@@ -1,0 +1,11 @@
+.axis {
+  path, line {
+    fill: none;
+    stroke: #dee2e6; // Match table border style
+    shape-rendering: crispEdges;
+  }
+
+  .domain {
+    stroke: none;
+  }
+}

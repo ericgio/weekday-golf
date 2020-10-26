@@ -2,44 +2,17 @@ import cx from 'classnames';
 import * as d3 from 'd3';
 import { parseISO, format } from 'date-fns';
 import groupBy from 'lodash/groupBy';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Axis from './Axis';
 import Line from './Line';
+import useResizeObserver from './useResizeObserver';
 
 import { getPlayerInfo } from '../../data/utils';
 import { PAR } from '../../constants';
 
 import styles from './styles/RoundsChart.module.scss';
-
-const useResizeObserver = (
-  containerRef,
-  initialSize = { height: 0, width: 0 }
-) => {
-  const [size, setSize] = useState(initialSize);
-
-  useEffect(() => {
-    const containerElem = containerRef.current;
-
-    if (!containerElem) {
-      return;
-    }
-
-    const observer = new ResizeObserver(() => {
-      setSize({
-        height: containerElem.clientHeight,
-        width: containerElem.clientWidth,
-      });
-    });
-
-    observer.observe(containerElem);
-
-    return () => observer.unobserve(containerElem);
-  }, [containerRef]);
-
-  return size;
-};
 
 const translate = (x, y) => `translate(${x}, ${y})`;
 
