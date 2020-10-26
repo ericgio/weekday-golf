@@ -62,6 +62,36 @@ export function getPlayerRoundSummaries(scores) {
   });
 }
 
+export function getRoundsWonByPlayer(scores) {
+  const byRound =
+    getPlayerRoundSummaries(scores).reduce((acc, { round, player, total }) => {
+      if (!acc[round] || total < acc[round].total) {
+        acc[round] = {
+          players: [player],
+          total,
+        };
+      } else if (total === acc[round].total) {
+        acc[round].players.push(player);
+      }
+      return acc;
+    }, {});
+
+  return Object.values(byRound).reduce((acc, { players }) => {
+    players.forEach((player) => {
+      if (!acc[player]) {
+        acc[player] = 1;
+      } else {
+        acc[player] += 1;
+      }
+    });
+    return acc;
+  }, {});
+}
+
+export function getRoundsWonPercentage(roundsWon, roundsPlayed) {
+  return round((roundsWon * 100) / roundsPlayed, 1);
+}
+
 /**
  * @param {Score[]} scores
  * @param {number} limit
