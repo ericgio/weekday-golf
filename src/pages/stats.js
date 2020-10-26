@@ -31,7 +31,7 @@ import {
   getTopRounds,
 } from '../data/utils';
 
-import styles from './stats.module.scss';
+import styles from './styles/stats.module.scss';
 
 /**
  * @typedef {import('../data/getAllData').Round} Round

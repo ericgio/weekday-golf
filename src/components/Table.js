@@ -2,7 +2,7 @@ import cx from 'classnames';
 import React from 'react';
 import { Table as RBTable } from 'react-bootstrap';
 
-import styles from './Table.module.scss';
+import styles from './styles/Table.module.scss';
 
 const RowHeader = ({ as: AsComponent = 'td', className, ...props }) => (
   <AsComponent

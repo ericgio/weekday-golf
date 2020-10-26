@@ -11,7 +11,7 @@ import Table from './Table';
 
 import { getPlayerInfo, skinCountForHole } from '../data/utils';
 
-import styles from './RoundTable.module.scss';
+import styles from './styles/RoundTable.module.scss';
 
 const Skindicator = ({ count }) => {
   if (count < 2) {

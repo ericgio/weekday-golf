@@ -5,7 +5,7 @@ import React, { Fragment } from 'react';
 import { Container, Navbar, Nav } from 'react-bootstrap';
 import cx from 'classnames';
 
-import styles from './Layout.module.scss';
+import styles from './styles/Layout.module.scss';
 
 const ITEMS = [
   { path: 'rounds', label: 'Rounds' },
