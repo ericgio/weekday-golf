@@ -3,15 +3,22 @@
 }
 
 .xAxis {
-  text {
-    text-anchor: start;
-    transform: translate(3px, -10px);
-  }
+
 }
 
 .yAxis {
   text {
     text-anchor: start;
     transform: translate(10px, -8px);
+  }
+}
+
+.yAxisLines {
+  line {
+    stroke: rgba(0, 0, 0, 0.05);
+  }
+
+  path, text {
+    display: none;
   }
 }

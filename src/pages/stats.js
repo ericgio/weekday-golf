@@ -12,6 +12,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import BestRoundsTable from '../components/BestRoundsTable';
 import Layout from '../components/Layout';
+import ShotDistributionChart from '../components/Chart/ShotDistributionChart';
 import Table from '../components/Table';
 
 import getAllData from '../data/getAllData';
@@ -89,7 +90,13 @@ const SortableHeader = ({
 /**
  * @param {props} props
  */
-const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
+const StatsPage = ({
+  globalHoleAvgs,
+  playerStats,
+  rounds,
+  scores,
+  topRounds,
+}) => {
   const [order, setOrder] = useState('asc');
   const [selectedSortKey, setSelectedSortKey] = useState('roundAvg');
 
@@ -254,6 +261,9 @@ const StatsPage = ({ rounds, topRounds, globalHoleAvgs, playerStats }) => {
 
       <h3>Best Rounds</h3>
       <BestRoundsTable topRounds={topRounds} rounds={rounds} />
+
+      <h3>Shot Distribution</h3>
+      <ShotDistributionChart scores={scores} />
     </Layout>
   );
 };
@@ -308,10 +318,11 @@ export async function getStaticProps() {
 
   return {
     props: {
-      rounds,
-      topRounds,
       globalHoleAvgs,
       playerStats,
+      rounds,
+      scores,
+      topRounds,
     },
     revalidate: 30,
   };
