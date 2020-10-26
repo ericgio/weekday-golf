@@ -46,7 +46,7 @@ const options = {
  * @typedef {{
  *   player: string,
  *   round: string,
- *   hole: number,
+ *   hole: string,
  *   par: number,
  *   score: number,
  * }} Score
@@ -78,7 +78,7 @@ function parseRange({ range, values }) {
     const parRow = scoreRows.shift();
     pars = tail(parRow).map((par) => parseInt(par, 10));
   }
-  const holes = tail(holesRow).map((hole) => parseInt(hole, 10));
+  const holes = tail(holesRow);
 
   scoreRows.forEach((scoreRow) => {
     const [playerKey, ...playerScores] = scoreRow;

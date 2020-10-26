@@ -5,7 +5,6 @@ import { parseISO, format } from 'date-fns';
 
 import Table from './Table';
 import { getPlayerInfo } from '../data/utils';
-import { PAR } from '../constants';
 
 /**
  * @typedef {import('../data/getAllData').Round} Round
@@ -32,7 +31,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
       </thead>
       <tbody>
         {topRounds.map(({ round, player, total }, idx) => {
-          const { date } = find(rounds, { id: round });
+          const { date, parTotal } = find(rounds, { id: round });
           const { name } = getPlayerInfo(player);
 
           if (idx > 0 && total !== topRounds[idx - 1].total) {
@@ -43,7 +42,7 @@ export default function BestRoundsTable({ rounds, topRounds }) {
             <tr key={`${name}-${date}`}>
               <td>{place}</td>
               <Table.RowHeader>{name}</Table.RowHeader>
-              <td>{total} (+{roundTo(total - PAR, 1)})</td>
+              <td>{total} (+{roundTo(total - parTotal, 1)})</td>
               <td>
                 {format(parseISO(date), 'MMMM do, y')}
               </td>

@@ -10,6 +10,7 @@ import roundTo from 'lodash/round';
 import React, { useCallback, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+import { sum } from 'lodash';
 import BestRoundsTable from '../components/BestRoundsTable';
 import Layout from '../components/Layout';
 import ShotDistributionChart from '../components/Chart/ShotDistributionChart';
@@ -17,7 +18,7 @@ import Table from '../components/Table';
 
 import getAllData from '../data/getAllData';
 
-import { HOLES, PAR, PLAYERS } from '../constants';
+import { PLAYERS } from '../constants';
 
 import {
   getAvgRoundScore,
@@ -41,6 +42,11 @@ const TRENDING_BUFFER = 0.2;
 const TOP_ROUNDS = 10;
 const MIN_ROUNDS = 3;
 const RECENT_ROUND_COUNT = 8;
+// Placeholder to break dependency on constant
+const COURSE = {
+  holes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+  pars: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3 },
+};
 
 const Arrow = ({ className, dir, ...props }) => (
   <span
@@ -97,6 +103,7 @@ const StatsPage = ({
   scores,
   topRounds,
 }) => {
+  const { holes, pars } = COURSE;
   const [order, setOrder] = useState('asc');
   const [selectedSortKey, setSelectedSortKey] = useState('roundAvg');
 
@@ -162,8 +169,9 @@ const StatsPage = ({
           }) => {
             const min = Math.min(...Object.values(holeAvgs));
             const max = Math.max(...Object.values(holeAvgs));
-            const minHoles = HOLES.filter((hole) => holeAvgs[hole] === min);
-            const maxHoles = HOLES.filter((hole) => holeAvgs[hole] === max);
+            const minHoles = holes.filter((hole) => holeAvgs[hole] === min);
+            const maxHoles = holes.filter((hole) => holeAvgs[hole] === max);
+            const parTotal = sum(Object.values(pars));
 
             const dataCells = roundsPlayed === 0 ?
               <React.Fragment>
@@ -174,7 +182,7 @@ const StatsPage = ({
                 <td>-</td>
               </React.Fragment> :
               <React.Fragment>
-                <td>{roundAvg} (+{roundTo(roundAvg - PAR, 1)})</td>
+                <td>{roundAvg} (+{roundTo(roundAvg - parTotal, 1)})</td>
                 <td>{roundsPlayed} ({roundsPlayedPercentage}%)</td>
                 <td>{roundsWon} ({roundsWonPercentage}%)</td>
                 <td>{minHoles.join(', ')} ({min})</td>
@@ -203,7 +211,7 @@ const StatsPage = ({
             <Table.RowHeader as="th">
               Name
             </Table.RowHeader>
-            {HOLES.map((hole) => <th key={hole}>{hole}</th>)}
+            {holes.map((hole) => <th key={hole}>{hole}</th>)}
           </tr>
         </thead>
         <tbody>
@@ -214,7 +222,7 @@ const StatsPage = ({
                 <Table.RowHeader>
                   {name}
                 </Table.RowHeader>
-                {HOLES.map((hole) => {
+                {holes.map((hole) => {
                   const bestRecentAvg = min(map(arr, `recentHoleAvgs.${hole}`));
                   const holeAvg = holeAvgs[hole];
                   const recentHoleAvg = recentHoleAvgs[hole];
@@ -250,7 +258,7 @@ const StatsPage = ({
             <Table.RowHeader as="th">
               Overall
             </Table.RowHeader>
-            {HOLES.map((hole) => (
+            {holes.map((hole) => (
               <th key={hole}>
                 {globalHoleAvgs[hole]}
               </th>

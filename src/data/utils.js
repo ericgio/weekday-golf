@@ -7,10 +7,10 @@ import filter from 'lodash/filter';
 import first from 'lodash/first';
 import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
-import zipObject from 'lodash/zipObject';
 import map from 'lodash/map';
 
-import { PLAYERS, HOLES } from '../constants';
+import { mapValues } from 'lodash';
+import { PLAYERS } from '../constants';
 
 export function getPlayerInfo(search) {
   search = search.toLowerCase();
@@ -41,6 +41,7 @@ export function getAvg(numerator, denominator, precision = 1) {
  *   round: string,
  *   player: string,
  *   total: number,
+ *   parTotal: number,
  * }} PlayerRoundSummary
  */
 
@@ -57,8 +58,9 @@ export function getPlayerRoundSummaries(scores) {
   return Object.values(groupedScores).map((scoreList) => {
     const { round, player } = scoreList[0];
     const total = sumBy(scoreList, 'score');
+    const parTotal = sumBy(scoreList, 'par');
 
-    return { round, player, total };
+    return { round, player, total, parTotal };
   });
 }
 
@@ -156,7 +158,7 @@ export function getAvgRoundScore(scores) {
 
 /**
  * @param {Score[]} scores
- * @param {number} hole
+ * @param {string} hole
  * @returns {number}
  */
 export function getHoleAvg(scores, hole) {
@@ -170,10 +172,8 @@ export function getHoleAvg(scores, hole) {
  * @returns {Object<string, number>}
  */
 export function getHoleAvgs(scores) {
-  return zipObject(
-    HOLES,
-    HOLES.map((hole) => getHoleAvg(scores, hole)),
-  );
+  const scoresByHole = groupBy(scores, 'hole');
+  return mapValues(scoresByHole, getHoleAvg);
 }
 
 /**

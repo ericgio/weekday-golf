@@ -10,7 +10,6 @@ import Line from './Line';
 import useResizeObserver from './useResizeObserver';
 
 import { getPlayerInfo } from '../../data/utils';
-import { PAR } from '../../constants';
 
 import styles from './styles/RoundsChart.module.scss';
 
@@ -84,7 +83,7 @@ const RoundsChart = ({ data }) => {
                 x={(d) => xScale(parseTime(d.round))}
                 y={(d) => yScale(d.total)}
               />
-              {players[id].map(({ round, total }) => {
+              {players[id].map(({ round, total, parTotal }) => {
                 // TODO: don't use round id as a date. Pull the round object
                 // and use its `date` field instead.
                 const date = format(parseISO(round), 'MMM do, y');
@@ -103,7 +102,7 @@ const RoundsChart = ({ data }) => {
                       <Tooltip>
                         {date}<br />
                         {name}
-                        {total} (+{total - PAR})
+                        {total} (+{total - parTotal})
                       </Tooltip>
                     }
                     placement="top">
