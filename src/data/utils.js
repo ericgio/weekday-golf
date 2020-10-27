@@ -9,7 +9,7 @@ import last from 'lodash/last';
 import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 
-import { mapValues } from 'lodash';
+import mapValues from 'lodash/mapValues';
 import { PLAYERS } from '../constants';
 
 export function getPlayerInfo(search) {
