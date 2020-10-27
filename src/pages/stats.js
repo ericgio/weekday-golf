@@ -7,10 +7,10 @@ import sortBy from 'lodash/sortBy';
 import min from 'lodash/min';
 import map from 'lodash/map';
 import roundTo from 'lodash/round';
+import sum from 'lodash/sum';
 import React, { useCallback, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import { sum } from 'lodash';
 import BestRoundsTable from '../components/BestRoundsTable';
 import Layout from '../components/Layout';
 import ShotDistributionChart from '../components/Chart/ShotDistributionChart';
