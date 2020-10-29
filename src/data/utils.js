@@ -194,7 +194,7 @@ function getSkinWinner(scores) {
 /**
  * @param {Score[]} scores All round scores for a people playing skins
  * @param {string} player id of a player to see how many skins they won
- * @param {number} hole The hole in question
+ * @param {string} hole The hole in question
  * @returns {number} The number of skins won by this player on this hole
  */
 export function skinCountForHole(scores, player, hole) {
@@ -206,14 +206,16 @@ export function skinCountForHole(scores, player, hole) {
   // Great, this player won the current hole. Look back to see if there were
   // pushes leading up to this.
   let skinsWon = 1;
-  let holeInQuestion = hole - 1;
-  while (holeInQuestion > 0) {
+  let holeInQuestion = hole;
+  while (holeInQuestion !== '1') {
+    // H4x, a kinda safe-ish way to decrement the hole number (since it it
+    // stored as a string everywhere.
+    holeInQuestion = ''+(--holeInQuestion);
     const earlierHoleScores = filter(scores, { hole: holeInQuestion });
     if (getSkinWinner(earlierHoleScores) !== undefined) {
       break;
     }
     skinsWon += 1;
-    holeInQuestion -= 1;
   }
 
   return skinsWon;
