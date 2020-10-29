@@ -210,7 +210,8 @@ export function skinCountForHole(scores, player, hole) {
   while (holeInQuestion !== '1') {
     // H4x, a kinda safe-ish way to decrement the hole number (since it it
     // stored as a string everywhere.
-    holeInQuestion = ''+(--holeInQuestion);
+    // eslint-disable-next-line no-plusplus
+    holeInQuestion = `${--holeInQuestion}`;
     const earlierHoleScores = filter(scores, { hole: holeInQuestion });
     if (getSkinWinner(earlierHoleScores) !== undefined) {
       break;
