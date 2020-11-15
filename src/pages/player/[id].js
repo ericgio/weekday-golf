@@ -14,6 +14,8 @@ import { getPlayerRoundSummaries, getTopRounds } from '../../data/utils';
 
 import { PLAYERS } from '../../constants';
 
+import styles from '../styles/players.module.scss';
+
 const TOP_ROUNDS = 5;
 
 export default function PlayerPage({
@@ -27,8 +29,12 @@ export default function PlayerPage({
 
   return (
     <Layout title={name}>
-      <h1>
-        <ProfileImage fbId={fbId} roundedCircle />
+      <h1 className={styles.header}>
+        <ProfileImage
+          className={styles.headerImage}
+          fbId={fbId}
+          roundedCircle
+        />
         {name}
       </h1>
       <h3>Best Rounds</h3>

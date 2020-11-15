@@ -1,0 +1,14 @@
+.header {
+  font-size: 36px;
+  margin-bottom: 24px;
+}
+
+.headerImage {
+  height: 72px;
+  margin-right: 16px;
+
+  &::before {
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    content: ' ';
+  }
+}
