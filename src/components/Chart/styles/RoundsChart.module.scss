@@ -2,6 +2,19 @@
   margin-bottom: 30px;
 }
 
+.avgScore {
+  path {
+    shape-rendering: crispEdges;
+    stroke: #dee2e6;
+    stroke-dasharray: 4, 1;
+  }
+
+  text {
+    fill: #aaa;
+    font-size: 10px;
+  }
+}
+
 .xAxis {
   text {
     text-anchor: start;

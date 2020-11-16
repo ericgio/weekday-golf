@@ -39,7 +39,7 @@ export default function PlayerPage({
       </h1>
       <h3>Best Rounds</h3>
       <BestRoundsTable topRounds={topRounds} rounds={roundsWithPlayer} />
-      <RoundsChart data={roundsSummary} />
+      <RoundsChart data={roundsSummary} height={210} />
       {roundsWithPlayer.map((round) => (
         <RoundTable key={round.id} round={round} scores={scoresWithPlayer} />
       ))}

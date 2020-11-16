@@ -13,9 +13,9 @@ import { getPlayerInfo } from '../../data/utils';
 
 import styles from './styles/RoundsChart.module.scss';
 
+const round = d3.format('.1f');
 const translate = (x, y) => `translate(${x}, ${y})`;
 
-const COLORS = d3.schemeCategory10;
 const HEIGHT = 360;
 const MARGIN = {
   bottom: 24,
@@ -26,17 +26,23 @@ const MARGIN = {
 
 const parseTime = d3.timeParse('%Y-%m-%d');
 
-const RoundsChart = ({ data }) => {
+const RoundsChart = ({ data, height }) => {
   const ref = useRef(null);
-  const { height, width } = useResizeObserver(ref);
+  const { width } = useResizeObserver(ref);
 
   const innerHeight = height - MARGIN.top - MARGIN.bottom;
   const innerWidth = width - MARGIN.left - MARGIN.right;
 
   const players = groupBy(data, 'player');
+  const [minDate, maxDate] = d3.extent(data, (d) => parseTime(d.round));
+  const avgScore = round(d3.mean(data, (d) => d.total));
+
+  const colors = d3
+    .scaleSequential(d3.interpolatePlasma)
+    .domain([0, Object.keys(players).length * 0.9]);
 
   const xScale = d3.scaleTime()
-    .domain(d3.extent(data, (d) => parseTime(d.round)))
+    .domain([minDate, maxDate])
     .rangeRound([0, innerWidth]);
 
   const yScale = d3.scaleLinear()
@@ -60,10 +66,12 @@ const RoundsChart = ({ data }) => {
     .ticks(5)
     .tickSize(3);
 
+  const isSinglePlayer = Object.keys(players).length === 1;
+
   return (
     <div className={styles.container} ref={ref}>
       <svg
-        height={HEIGHT}
+        height={height}
         width={width}>
         <g transform={translate(MARGIN.left, MARGIN.top)}>
           <Axis
@@ -75,52 +83,77 @@ const RoundsChart = ({ data }) => {
             axis={yAxis}
             className={cx(styles.axis, styles.yAxis)}
           />
-          {Object.keys(players).map((id, idx) => (
-            <React.Fragment key={id}>
-              <Line
-                data={players[id]}
-                stroke={COLORS[idx]}
-                x={(d) => xScale(parseTime(d.round))}
-                y={(d) => yScale(d.total)}
-              />
-              {players[id].map(({ round, total, parTotal }) => {
-                // TODO: don't use round id as a date. Pull the round object
-                // and use its `date` field instead.
-                const date = format(parseISO(round), 'MMM do, y');
+          {Object.keys(players).map((id, idx) => {
+            const color = colors(idx);
+            // TODO: This assumes all rounds have the same par.
+            const par = players[id][0].parTotal;
 
-                // Don't display the player's name on their profile page.
-                const name = Object.keys(players).length > 1 ?
-                  <React.Fragment>
-                    {getPlayerInfo(id).name}<br />
-                  </React.Fragment> :
-                  null;
-
-                return (
-                  <OverlayTrigger
-                    key={`${id}-${round}`}
-                    overlay={
-                      <Tooltip>
-                        {date}<br />
-                        {name}
-                        {total} (+{total - parTotal})
-                      </Tooltip>
-                    }
-                    placement="top">
-                    <circle
-                      cx={xScale(parseTime(round))}
-                      cy={yScale(total)}
-                      fill={COLORS[idx]}
-                      r={4}
+            return (
+              <React.Fragment key={id}>
+                {isSinglePlayer &&
+                  <g className={styles.avgScore}>
+                    <text
+                      transform={translate(20, yScale(avgScore) - 5)}>
+                      Avg. Score: {avgScore} (+{round(avgScore - par)})
+                    </text>
+                    <Line
+                      data={[
+                        { round: minDate, total: avgScore },
+                        { round: maxDate, total: avgScore },
+                      ]}
+                      x={(d) => xScale(d.round)}
+                      y={(d) => yScale(d.total)}
                     />
-                  </OverlayTrigger>
-                );
-              })}
-            </React.Fragment>
-          ))}
+                  </g>}
+                <Line
+                  data={players[id]}
+                  stroke={color}
+                  x={(d) => xScale(parseTime(d.round))}
+                  y={(d) => yScale(d.total)}
+                />
+                {players[id].map(({ round, total, parTotal }) => {
+                  // TODO: don't use round id as a date. Pull the round object
+                  // and use its `date` field instead.
+                  const date = format(parseISO(round), 'MMM do, y');
+
+                  // Don't display the player's name on their profile page.
+                  const name = !isSinglePlayer ?
+                    <React.Fragment>
+                      {getPlayerInfo(id).name}<br />
+                    </React.Fragment> :
+                    null;
+
+                  return (
+                    <OverlayTrigger
+                      key={`${id}-${round}`}
+                      overlay={
+                        <Tooltip>
+                          {date}<br />
+                          {name}
+                          {total} (+{total - parTotal})
+                        </Tooltip>
+                      }
+                      placement="top">
+                      <circle
+                        cx={xScale(parseTime(round))}
+                        cy={yScale(total)}
+                        fill={color}
+                        r={4}
+                      />
+                    </OverlayTrigger>
+                  );
+                })}
+              </React.Fragment>
+            );
+          })}
         </g>
       </svg>
     </div>
   );
+};
+
+RoundsChart.defaultProps = {
+  height: HEIGHT,
 };
 
 export default RoundsChart;
