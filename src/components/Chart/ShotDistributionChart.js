@@ -6,9 +6,13 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Axis from './Axis';
 import useResizeObserver from './useResizeObserver';
 
+import { PLAYERS } from '../../constants';
+
 import styles from './styles/ShotDistributionChart.module.scss';
 
 const translate = (x, y) => `translate(${x}, ${y})`;
+
+const getPlayerName = (id) => PLAYERS.find((p) => id === p.id).name;
 
 const HEIGHT = 360;
 const MARGIN = {
@@ -18,16 +22,28 @@ const MARGIN = {
   top: 16,
 };
 
-const scoresReducer = (acc, { score }) => {
+const scoresReducer = ({ data, players }, { player, score }) => {
   const key = score >= 8 ? '8+' : score;
 
-  if (!acc[key]) {
-    acc[key] = 1;
-  } else {
-    acc[key] += 1;
+  if (players.indexOf(player) === -1) {
+    players.push(player);
   }
 
-  return acc;
+  if (!data[key]) {
+    data[key] = {
+      [player]: 1,
+      score: key,
+      total: 1,
+    };
+  } else if (!data[key][player]) {
+    data[key][player] = 1;
+    data[key].total += 1;
+  } else {
+    data[key][player] += 1;
+    data[key].total += 1;
+  }
+
+  return { data, players };
 };
 
 const RoundsChart = ({ scores }) => {
@@ -37,7 +53,10 @@ const RoundsChart = ({ scores }) => {
   const innerHeight = height - MARGIN.top - MARGIN.bottom;
   const innerWidth = width - MARGIN.left - MARGIN.right;
 
-  const data = scores.reduce(scoresReducer, {});
+  const { data, players } = scores.reduce(scoresReducer, {
+    data: {},
+    players: [],
+  });
 
   const xScale = d3.scaleBand()
     .domain(Object.keys(data))
@@ -45,8 +64,13 @@ const RoundsChart = ({ scores }) => {
     .padding(0.25);
 
   const yScale = d3.scaleLinear()
-    .domain([0, d3.max(Object.values(data)) + 15])
+    .domain([0, d3.max(Object.values(data), (d) => d.total) + 15])
+    .nice()
     .rangeRound([innerHeight, 0]);
+
+  const colors = d3
+    .scaleSequential(d3.interpolatePlasma)
+    .domain([0, players.length * 0.9]);
 
   const xAxis = d3
     .axisBottom(xScale)
@@ -61,6 +85,8 @@ const RoundsChart = ({ scores }) => {
     .axisRight(yScale)
     .ticks(5)
     .tickSize(innerWidth);
+
+  const stacked = d3.stack().keys(players)(Object.values(data));
 
   return (
     <div className={styles.container} ref={ref}>
@@ -81,23 +107,56 @@ const RoundsChart = ({ scores }) => {
             axis={yAxis}
             className={cx(styles.yAxis)}
           />
-          {Object.keys(data).map((k, idx) => {
-            const value = data[k];
+          {stacked.map((score, idx) => {
+            const id = score.key;
+            const name = getPlayerName(id);
+
             return (
-              <OverlayTrigger
-                key={`${k}-${value}`}
-                overlay={<Tooltip>{value}</Tooltip>}
-                placement="top">
-                <rect
-                  fill={d3.schemeCategory10[0]}
-                  height={Math.abs(innerHeight - yScale(value))}
-                  width={xScale.bandwidth()}
-                  x={xScale(k)}
-                  y={yScale(value)}
-                />
-              </OverlayTrigger>
+              <g fill={colors(idx)} key={id}>
+                {score.map((s) => {
+                  return (
+                    <OverlayTrigger
+                      key={s.data.score}
+                      overlay={
+                        <Tooltip>
+                          {name}
+                          <br />
+                          {s.data[id]}
+                        </Tooltip>
+                      }
+                      placement="top">
+                      <rect
+                        height={Math.abs(yScale(s[0]) - yScale(s[1])) || 0}
+                        width={xScale.bandwidth()}
+                        x={xScale(s.data.score)}
+                        y={yScale(s[1])}
+                      />
+                    </OverlayTrigger>
+                  );
+                })}
+              </g>
             );
           })}
+          {players.slice().map((id, idx) => (
+            <g
+              className={styles.legend}
+              key={id}
+              transform={translate(0, idx * 20)}>
+              <rect
+                fill={colors(idx)}
+                height={19}
+                width={19}
+                x={innerWidth - 19}
+              />
+              <text
+                dy=".35em"
+                textAnchor="end"
+                x={innerWidth - 24}
+                y={9}>
+                {getPlayerName(id)}
+              </text>
+            </g>
+          ))}
         </g>
       </svg>
     </div>

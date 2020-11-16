@@ -2,14 +2,18 @@
   margin-bottom: 30px;
 }
 
-.xAxis {
-
-}
-
 .yAxis {
   text {
     text-anchor: start;
     transform: translate(10px, -8px);
+  }
+}
+
+.legend,
+.xAxis,
+.yAxis {
+  text {
+    font-size: 14px;
   }
 }
 

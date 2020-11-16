@@ -42,11 +42,9 @@ const TRENDING_BUFFER = 0.2;
 const TOP_ROUNDS = 10;
 const MIN_ROUNDS = 3;
 const RECENT_ROUND_COUNT = 8;
+
 // Placeholder to break dependency on constant
-const COURSE = {
-  holes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
-  pars: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3 },
-};
+const COURSE = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((hole) => ({ hole, par: 3 }));
 
 const Arrow = ({ className, dir, ...props }) => (
   <span
@@ -103,7 +101,9 @@ const StatsPage = ({
   scores,
   topRounds,
 }) => {
-  const { holes, pars } = COURSE;
+  const holes = map(COURSE, 'hole');
+  const pars = map(COURSE, 'par');
+
   const [order, setOrder] = useState('asc');
   const [selectedSortKey, setSelectedSortKey] = useState('roundAvg');
 
@@ -171,7 +171,7 @@ const StatsPage = ({
             const max = Math.max(...Object.values(holeAvgs));
             const minHoles = holes.filter((hole) => holeAvgs[hole] === min);
             const maxHoles = holes.filter((hole) => holeAvgs[hole] === max);
-            const parTotal = sum(Object.values(pars));
+            const parTotal = sum(pars);
 
             const dataCells = roundsPlayed === 0 ?
               <React.Fragment>
