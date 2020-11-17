@@ -1,6 +1,5 @@
 import cx from 'classnames';
 import orderBy from 'lodash/orderBy';
-import filter from 'lodash/filter';
 import mean from 'lodash/mean';
 import values from 'lodash/values';
 import sortBy from 'lodash/sortBy';
@@ -18,16 +17,12 @@ import Table from '../components/Table';
 
 import getAllData from '../data/getAllData';
 
-import { PLAYERS } from '../constants';
+import { PLAYERS, RECENT_ROUND_COUNT } from '../constants';
 
 import {
-  getAvgRoundScore,
   getHoleAvgs,
-  getRecentPlayerRounds,
-  getRoundsPlayed,
-  getRoundsPlayedPercentage,
-  getRoundsWonByPlayer,
-  getRoundsWonPercentage,
+  getHoleAvgStats,
+  getPlayerStats,
   getTopRounds,
 } from '../data/utils';
 
@@ -41,7 +36,6 @@ import styles from './styles/stats.module.scss';
 const TRENDING_BUFFER = 0.2;
 const TOP_ROUNDS = 10;
 const MIN_ROUNDS = 3;
-const RECENT_ROUND_COUNT = 8;
 
 // Placeholder to break dependency on constant
 const COURSE = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((hole) => ({ hole, par: 3 }));
@@ -167,10 +161,13 @@ const StatsPage = ({
             roundsWonPercentage,
             holeAvgs,
           }) => {
-            const min = Math.min(...Object.values(holeAvgs));
-            const max = Math.max(...Object.values(holeAvgs));
-            const minHoles = holes.filter((hole) => holeAvgs[hole] === min);
-            const maxHoles = holes.filter((hole) => holeAvgs[hole] === max);
+            const {
+              max,
+              maxHoles,
+              min,
+              minHoles,
+            } = getHoleAvgStats(holeAvgs, holes);
+
             const parTotal = sum(pars);
 
             const dataCells = roundsPlayed === 0 ?
@@ -300,29 +297,10 @@ export async function getStaticProps() {
 
   const topRounds = getTopRounds(scores, TOP_ROUNDS);
   const globalHoleAvgs = getHoleAvgs(scores);
-  const roundsWonByPlayer = getRoundsWonByPlayer(scores);
 
-  const playerStats = PLAYERS.map(({ id, name }) => {
-    const playerScores = filter(scores, { player: id });
-    const recentRounds = getRecentPlayerRounds(rounds, id, RECENT_ROUND_COUNT);
-    const recentPlayerScores = playerScores.filter(
-      (score) => recentRounds.includes(score.round)
-    );
-    const roundsWon = roundsWonByPlayer[id] || 0;
-    const roundsPlayed = getRoundsPlayed(rounds, id);
-
-    return {
-      id,
-      name,
-      holeAvgs: getHoleAvgs(playerScores),
-      recentHoleAvgs: getHoleAvgs(recentPlayerScores),
-      roundAvg: getAvgRoundScore(playerScores),
-      roundsPlayed,
-      roundsPlayedPercentage: getRoundsPlayedPercentage(rounds, id),
-      roundsWon,
-      roundsWonPercentage: getRoundsWonPercentage(roundsWon, roundsPlayed),
-    };
-  });
+  const playerStats = PLAYERS.map((player) => (
+    getPlayerStats(player, rounds, scores)
+  ));
 
   return {
     props: {

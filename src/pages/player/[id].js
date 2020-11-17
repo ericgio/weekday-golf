@@ -1,6 +1,9 @@
 import filter from 'lodash/filter';
 import find from 'lodash/find';
+import map from 'lodash/map';
+import round from 'lodash/round';
 import some from 'lodash/some';
+import sum from 'lodash/sum';
 import React from 'react';
 
 import BestRoundsTable from '../../components/BestRoundsTable';
@@ -8,24 +11,45 @@ import Layout from '../../components/Layout';
 import ProfileImage from '../../components/ProfileImage';
 import RoundsChart from '../../components/Chart/RoundsChart';
 import RoundTable from '../../components/RoundTable';
+import Topline from '../../components/Topline';
 
 import getAllData from '../../data/getAllData';
-import { getPlayerRoundSummaries, getTopRounds } from '../../data/utils';
+import {
+  getHoleAvgStats,
+  getPlayerRoundSummaries,
+  getPlayerStats,
+  getTopRounds,
+} from '../../data/utils';
 
 import { PLAYERS } from '../../constants';
 
 import styles from '../styles/players.module.scss';
 
+const COURSE = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((hole) => ({ hole, par: 3 }));
 const TOP_ROUNDS = 5;
 
+const holes = map(COURSE, 'hole');
+const pars = map(COURSE, 'par');
+
 export default function PlayerPage({
-  playerInfo,
+  player,
+  playerStats,
   roundsSummary,
   roundsWithPlayer,
   scoresWithPlayer,
   topRounds,
 }) {
-  const { name, fbId } = playerInfo;
+  const { name, fbId } = player;
+  const {
+    holeAvgs,
+    roundAvg,
+    roundsPlayed,
+    roundsPlayedPercentage,
+    roundsWon,
+    roundsWonPercentage,
+  } = playerStats;
+
+  const { max, maxHoles, min, minHoles } = getHoleAvgStats(holeAvgs, holes);
 
   return (
     <Layout title={name}>
@@ -37,6 +61,23 @@ export default function PlayerPage({
         />
         {name}
       </h1>
+      <Topline>
+        <Topline.Item label="Avg. Score">
+          {roundAvg} (+{round(roundAvg - sum(pars), 1)})
+        </Topline.Item>
+        <Topline.Item label="Rounds Played">
+          {roundsPlayed} ({roundsPlayedPercentage}%)
+        </Topline.Item>
+        <Topline.Item label="Rounds Won">
+          {roundsWon} ({roundsWonPercentage}%)
+        </Topline.Item>
+        <Topline.Item label="Best Hole">
+          {minHoles.join(', ')} ({min})
+        </Topline.Item>
+        <Topline.Item label="Worst Hole">
+          {maxHoles.join(', ')} ({max})
+        </Topline.Item>
+      </Topline>
       <h3>Best Rounds</h3>
       <BestRoundsTable topRounds={topRounds} rounds={roundsWithPlayer} />
       <RoundsChart data={roundsSummary} height={210} />
@@ -49,7 +90,7 @@ export default function PlayerPage({
 
 export async function getStaticProps({ params: { id } }) {
   const { rounds, scores } = await getAllData();
-  const playerInfo = find(PLAYERS, { id });
+  const player = find(PLAYERS, { id });
 
   const playerScores = filter(scores, { player: id });
   const topRounds = getTopRounds(playerScores, TOP_ROUNDS);
@@ -63,7 +104,8 @@ export async function getStaticProps({ params: { id } }) {
 
   return {
     props: {
-      playerInfo,
+      player,
+      playerStats: getPlayerStats(player, rounds, scores),
       roundsSummary: getPlayerRoundSummaries(playerScores),
       roundsWithPlayer,
       scoresWithPlayer,

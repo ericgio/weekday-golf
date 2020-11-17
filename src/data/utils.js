@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 
-import { PLAYERS } from '../constants';
+import { PLAYERS, RECENT_ROUND_COUNT } from '../constants';
 
 export function getPlayerInfo(search) {
   search = search.toLowerCase();
@@ -208,7 +208,7 @@ export function skinCountForHole(scores, player, hole) {
   let skinsWon = 1;
   let holeInQuestion = hole;
   while (holeInQuestion !== '1') {
-    // H4x, a kinda safe-ish way to decrement the hole number (since it it
+    // H4x, a kinda safe-ish way to decrement the hole number (since it is
     // stored as a string everywhere.
     // eslint-disable-next-line no-plusplus
     holeInQuestion = `${--holeInQuestion}`;
@@ -220,4 +220,50 @@ export function skinCountForHole(scores, player, hole) {
   }
 
   return skinsWon;
+}
+
+export function getHoleAvgStats(holeAvgs, holes) {
+  const min = Math.min(...Object.values(holeAvgs));
+  const max = Math.max(...Object.values(holeAvgs));
+
+  return {
+    max,
+    maxHoles: holes.filter((hole) => holeAvgs[hole] === max),
+    min,
+    minHoles: holes.filter((hole) => holeAvgs[hole] === min),
+  };
+}
+
+/**
+ * Top-level stats for a given player:
+ *
+ *  - Average Score
+ *  - Rounds Played
+ *  - Rounds Won
+ *  - Best Hole
+ *  - Worst Hole
+ */
+export function getPlayerStats(player, rounds, scores) {
+  const { id, name } = player;
+
+  const playerScores = filter(scores, { player: id });
+  const recentRounds = getRecentPlayerRounds(rounds, id, RECENT_ROUND_COUNT);
+  const recentPlayerScores = playerScores.filter(
+    (score) => recentRounds.includes(score.round)
+  );
+
+  const roundsWon = getRoundsWonByPlayer(scores)[id] || 0;
+  const roundsPlayed = getRoundsPlayed(rounds, id);
+
+  return {
+    id,
+    name,
+    holeAvgs: getHoleAvgs(playerScores),
+    recentHoleAvgs: getHoleAvgs(recentPlayerScores),
+    roundAvg: getAvgRoundScore(playerScores),
+    roundsPlayed,
+    roundsPlayedPercentage: getRoundsPlayedPercentage(rounds, id),
+    roundsWon,
+    roundsWonPercentage: getRoundsWonPercentage(roundsWon, roundsPlayed),
+  };
 }

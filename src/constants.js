@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/prefer-default-export
 export const PLAYERS = [
   {
     id: 'eric',
@@ -49,3 +48,5 @@ export const PLAYERS = [
     fbId: 711017,
   },
 ];
+
+export const RECENT_ROUND_COUNT = 8;
